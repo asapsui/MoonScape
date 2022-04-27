@@ -1,4 +1,11 @@
+/* Updates (Sam):
+ * Added a couple textures
+ * 
+ */
+
+package graphics;
 import javax.imageio.ImageIO;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -7,14 +14,14 @@ public class Texture {
     public int[] pixels;
     private String location;
     public final int SIZE;
-
+    
     public Texture(String location, int size){
         this.location = location;
         this.SIZE = size;
         this.pixels = new int[SIZE * SIZE];
         load();
-
     }
+    
     private void load(){
         try{
             BufferedImage image = ImageIO.read(new File(location));
@@ -28,10 +35,12 @@ public class Texture {
             System.out.println("sad days");
         }
     }
+ 
     public static Texture wood = new Texture("res/wood.png", 64);
     public static Texture brick = new Texture("res/redbrick.png", 64);
     public static Texture bluestone = new Texture("res/bluestone.png", 64);
     public static Texture stone = new Texture("res/greystone.png", 64);
     public static Texture moon = new Texture("res/moon.png", 64);
+    public static Texture guard = new Texture("res/O2.bmp", 64);
 
 }

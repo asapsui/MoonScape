@@ -1,7 +1,16 @@
+package main;
+
 //Mary Czelusniak
 //Ray Casting Engine
 import javax.sound.sampled.Line;
 import javax.swing.*;
+
+import entity.Block;
+import entity.Player;
+import entity.Sprite;
+import graphics.Ray;
+import graphics.Texture;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +29,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
     public static final int TILE_SIZE = 64;
     public static final int MAP_NUM_ROWS = 15;
     public static final int MAP_NUM_COLS = 15;
-    public static final int WINDOW_HEIGHT =MAP_NUM_ROWS * TILE_SIZE;
+    public static final int WINDOW_HEIGHT = MAP_NUM_ROWS * TILE_SIZE;
     public static final int WINDOW_WIDTH = MAP_NUM_COLS * TILE_SIZE;
 
     ////////////////////////////
@@ -40,6 +49,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
     // OBJECTS  //
     //////////////
     public Player player;
+    
     public ArrayList<Ray> rays;
     Timer timer;
     BufferStrategy bs;
@@ -48,6 +58,9 @@ public class Game extends JFrame implements Runnable, ActionListener {
     public int[] pixels;
     public ArrayList<Texture> textures;
 
+    public Block block;
+    public ArrayList<Sprite> sprites;
+    
     //public Screen screen;
 
 
@@ -67,7 +80,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
                     {1,0,0,0,0,0,0,2,0,3,3,3,3,3,1},
                     {1,0,0,0,0,0,0,2,0,0,0,0,0,0,1},
                     {1,0,0,0,0,0,0,2,0,0,0,4,0,0,1},
-                    {1,0,0,0,0,0,0,2,0,0,0,0,4,4,1},
+                    {2,0,0,0,0,0,0,2,0,0,0,0,4,4,1},
                     {1,0,0,0,0,0,0,2,0,0,0,0,0,0,1},
                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 
@@ -84,6 +97,12 @@ public class Game extends JFrame implements Runnable, ActionListener {
         textures.add(Texture.bluestone);
         textures.add(Texture.stone);
         textures.add(Texture.moon);
+        textures.add(Texture.guard);
+        
+     
+        sprites = new ArrayList<Sprite>();
+        block = new Block(300, 250);
+        sprites.add(block);
 
 
         setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
@@ -116,14 +135,39 @@ public class Game extends JFrame implements Runnable, ActionListener {
     public void run() {
         while(running) {
             renderingWalls(pixels,createAllRays());
+            renderSprites(pixels, createAllRays());
             render();
             timer.start();
 
         }
 
     }
+    
+    /* References: 
+     * https://www.youtube.com/watch?v=A9OsBSHFza8&list=PL656DADE0DA25ADBB&index=36
+     * 
+     */
+    // 2D sprites are always facing the camera 
+    public void renderSprites(int[] pixels, ArrayList<Ray> rays) {
+    	//sprites.get(0).getTexture().pixels[( (sprites.get(0).getTexture().SIZE) * offSetY) + offSetX]
 
-
+    	 for(Ray ray : rays) {
+             int textNum = ray.getHitWallColor() - 1; 
+             double correctWallDistance = ray.getDistance() * Math.cos(ray.getRayAngle() - player.rotationAngle);
+             double playerDistance = (WINDOW_WIDTH / 2) / (Math.tan(FOV_ANGLE / 2));
+             double wallStripHeight = playerDistance * (TILE_SIZE /correctWallDistance);
+             
+             int wallTopPixel = (int) ((WINDOW_HEIGHT/2) - (wallStripHeight/2));
+             wallTopPixel = wallTopPixel < 0 ? 0 : wallTopPixel;
+             int wallBottomPixel =(int) ((WINDOW_HEIGHT/2) + (wallStripHeight/2));
+             wallBottomPixel = wallBottomPixel > WINDOW_HEIGHT ? WINDOW_HEIGHT : wallBottomPixel;
+    	 
+             
+             for(int x = wallTopPixel; x < wallBottomPixel; x++){
+            	 
+             }
+    	 }
+    }
 
     //TODO: FUCKING TEXTURES AHHFISHFIDUHFISHDFUI
     public void renderingWalls(int[] pixels, ArrayList<Ray> rays){
@@ -132,8 +176,8 @@ public class Game extends JFrame implements Runnable, ActionListener {
         //This is where the magic happens
         int i = 0;
         for(Ray ray : rays) {
-            int textNum = ray.hitWallColor - 1;
-            double correctWallDistance = ray.distance * Math.cos(ray.rayAngle - player.rotationAngle);
+            int textNum = ray.getHitWallColor() - 1; 
+            double correctWallDistance = ray.getDistance() * Math.cos(ray.getRayAngle() - player.rotationAngle);
             double playerDistance = (WINDOW_WIDTH / 2) / (Math.tan(FOV_ANGLE / 2));
             double wallStripHeight = playerDistance * (TILE_SIZE /correctWallDistance);
 
@@ -143,10 +187,10 @@ public class Game extends JFrame implements Runnable, ActionListener {
             wallBottomPixel = wallBottomPixel > WINDOW_HEIGHT ? WINDOW_HEIGHT : wallBottomPixel;
 
             int offSetX;
-            if(ray.wasHitVertical){
-                offSetX = (int)ray.wallHitY % textures.get(textNum).SIZE;
+            if(ray.isWasHitVertical()){
+                offSetX = (int)ray.getWallHitY() % textures.get(textNum).SIZE;
             }else{
-                offSetX = (int)ray.wallHitX % textures.get(textNum).SIZE;
+                offSetX = (int)ray.getWallHitX() % textures.get(textNum).SIZE;
             }
             //Coloring the sky
             int c = 255;
@@ -163,7 +207,8 @@ public class Game extends JFrame implements Runnable, ActionListener {
                 int offSetY = (int) (distanceFromTop * ((float)textures.get(textNum).SIZE) / wallStripHeight);
 
                 int texColor;
-                if(ray.wasHitVertical)
+                if(ray.isWasHitVertical())
+                
                     texColor = textures.get(textNum).pixels[((textures.get(textNum).SIZE) * offSetY) + offSetX];
                     //I have no idea why the fuck this "else" line works but it does
                     //it shades the horizontal sides of the walls a darker shade.
@@ -171,8 +216,8 @@ public class Game extends JFrame implements Runnable, ActionListener {
                 pixels[i + x*(WINDOW_WIDTH)] = texColor;
 
             }
+            
             //Coloring the floor
-
             for(int n=wallBottomPixel; n<WINDOW_HEIGHT; n++) {
                 pixels[(WINDOW_WIDTH * n)+i] = Color.DARK_GRAY.getRGB();
 
@@ -257,6 +302,9 @@ public class Game extends JFrame implements Runnable, ActionListener {
 //                                 MINIMAP_SCALE_FACTOR * test.wallHitX,
 //                                 MINIMAP_SCALE_FACTOR * test.wallHitY));
         g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
+        
+        
+        g.drawImage(block.getTexture().getImage(), (int) block.getX(), (int) block.getY(), null);
         g.dispose();
         bs.show();
     }
@@ -297,6 +345,8 @@ public class Game extends JFrame implements Runnable, ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         player.update(map);
+        
+        // this'll be where the moving sprites will update
 
     }
 
