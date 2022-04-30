@@ -62,8 +62,11 @@ public class Game extends JFrame implements Runnable, ActionListener {
     public ArrayList<Sprite> sprites;
     
     //public Screen screen;
+    private enum STATE {
+        MENU, GAME;
+    };
 
-
+    private STATE State = STATE.MENU;
 
     private Thread thread;
     private boolean running = false;
@@ -303,6 +306,14 @@ public class Game extends JFrame implements Runnable, ActionListener {
 //                                 MINIMAP_SCALE_FACTOR * test.wallHitY));
         g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
         
+        g.drawImage(image, 0, 0, this);
+        
+        if (State == STATE.GAME) {
+            p.render(g);
+        }
+        else if (State == State.MENU) {
+            menu.render(g);
+        }
         
         g.drawImage(block.getTexture().getImage(), (int) block.getX(), (int) block.getY(), null);
         g.dispose();
