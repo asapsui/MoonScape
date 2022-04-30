@@ -315,7 +315,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
             menu.render(g);
         }
         
-        g.drawImage(block.getTexture().getImage(), (int) block.getX(), (int) block.getY(), null);
+        //g.drawImage(block.getTexture().getImage(), (int) block.getX(), (int) block.getY(), null);
         g.dispose();
         bs.show();
     }
