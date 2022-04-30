@@ -28,7 +28,7 @@ public class Sprite {
 	public boolean removed;
 
 	// 
-	public Sprite1(double x, double y) {
+	public Sprite(double x, double y) {
 		this.x = x;
 		this.y = y;
 		dx = 0;
