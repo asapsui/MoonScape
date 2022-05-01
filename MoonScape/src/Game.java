@@ -384,6 +384,5 @@ public class Game extends JFrame implements Runnable, ActionListener {
     // No one cares about main =D
     public static void main(String[] args){
         new Game();
-        System.out.println(Color.magenta.getRGB());
     }
 }
