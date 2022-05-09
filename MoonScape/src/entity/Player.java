@@ -7,6 +7,7 @@ public class Player
 implements KeyListener {
 	
 	// made x and y public so its accessible to the ray class
+	private Camera cam;
 	public double x;
     public double y;
 	
@@ -21,6 +22,8 @@ implements KeyListener {
         this.x = 300;
         this.y = 250;
 
+	//try to make the cam
+	this.cam = cam;
         this.turnDirection = 0; // -1 if left, +1 if right
         this.walkDirection = 0; // -1 if back, +1 if front
         this.rotationAngle = Math.PI / 2;
