@@ -61,6 +61,58 @@ implements KeyListener {
 
     }
 
+	//update movement (fixing)
+	/*
+	public void update(Player player, double time) {
+        if(cam.getBounds().collides(this.bounds)) {
+	
+	//collides(boolean)****
+            super.update(time);
+            chase(player);
+            move();
+
+            if(teleported) {
+                teleported = false;
+
+                bounds.setWidth(size / 2);
+                bounds.setHeight(size / 2 - yOffset);
+                bounds.setXOffset(size / 2 - xOffset);
+                bounds.setYOffset(size / 2 + yOffset);
+
+                hitBounds = new AABB(pos, size, size);
+                hitBounds.setXOffset(size / 2);
+
+                sense = new AABB(new Vector2f(pos.x + size / 2 - r_sense / 2, pos.y + size / 2 - r_sense / 2), r_sense);
+                attackrange = new AABB(new Vector2f(pos.x + bounds.getXOffset() + bounds.getWidth() / 2 - r_attackrange / 2 , pos.y + bounds.getYOffset() + bounds.getHeight() / 2 - r_attackrange / 2 ), r_attackrange);
+            }
+
+            if(attackrange.colCircleBox(player.getBounds()) && !isInvincible) {
+                attack = true;
+                player.setHealth(player.getHealth() - damage, 5f * getDirection(), currentDirection == UP || currentDirection == DOWN);
+            } else {
+                attack = false;
+            }
+
+            if (!fallen) {
+                if (!tc.collisionTile(dx, 0)) {
+                    sense.getPos().x += dx;
+                    attackrange.getPos().x += dx;
+                    pos.x += dx;
+                }
+                if (!tc.collisionTile(0, dy)) {
+                    sense.getPos().y += dy;
+                    attackrange.getPos().y += dy;
+                    pos.y += dy;
+                }
+            } else {
+                if(ani.hasPlayedOnce()) {
+                    die = true;
+                }
+            }
+        }
+    }
+	*/
+	
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyChar() == 'w' || e.getKeyCode() == KeyEvent.VK_UP){
