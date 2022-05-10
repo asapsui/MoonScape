@@ -7,7 +7,7 @@ import java.util.Hashtable;
 public class Player  
 implements KeyListener {
 	
-	double x;
+    double x;
     double y;
 	
     int turnDirection; // -1 for left, +1 for right
