@@ -7,7 +7,7 @@ import java.util.Hashtable;
 public class Player  
 implements KeyListener {
 	
-    double x;
+	double x;
     double y;
 	
     int turnDirection; // -1 for left, +1 for right
@@ -26,15 +26,12 @@ implements KeyListener {
 		put(5, new Texture("res/healthbar/5.png", 300));
 		put(4, new Texture("res/healthbar/4.png", 300));
 		put(3, new Texture("res/healthbar/3.png", 300));
-		put(3, new Texture("res/healthbar/2.png", 300));
+		put(2, new Texture("res/healthbar/2.png", 300));
 		put(1, new Texture("res/healthbar/1.png", 300));
 		put(0, new Texture("res/healthbar/0.png", 300));
-
-
 	}};
  
     public Player(){
-    	
         this.x = 200;
         this.y = 800;
 
@@ -44,8 +41,8 @@ implements KeyListener {
         this.moveSpeed = 2;
         this.rotationSpeed = 2 * (Math.PI / 180);
         // loads in with max health
-        this.health = 9;
-        this.maxHealth = 9;
+        this.health = 8;
+        this.maxHealth = 8;
         currentHealthImage = HealthTable.get(8);
     }
     public void update(int[][]map){
@@ -61,11 +58,11 @@ implements KeyListener {
         
         
         // since we are updating the players position 60 times per second
-        // this may mess up, since we updating the position so many times a second
         if (health != 0 && maxHealth != 0) {
 	        if (health < maxHealth) {
 	        	maxHealth = health;
 	        	// change the image for the health bar
+	        	System.out.println("Max Health: " + maxHealth );
 	        	currentHealthImage = HealthTable.get(health);
 	        }
         }
@@ -87,10 +84,6 @@ implements KeyListener {
     }
     public double vectorY(){
         return this.y+ Math.sin(this.rotationAngle) * 30;
-    }
-    
-    public int getHealth() {
-    	return this.health;
     }
     
     public void drawHealthbar(Graphics g) {

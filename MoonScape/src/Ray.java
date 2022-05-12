@@ -1,94 +1,32 @@
-/* Updates (Sam):
- * It may be bad practice, but since Ray is in a different package/folder I added getters/setters. 
- * This makes it accessible in the Game class.
- * 
- */
-
-package graphics;
-import entity.Player;
-import main.Game;
-
+package main;
 public class Ray {
 
-    private double rayAngle;
-    private double wallHitX;
-	private double wallHitY;
-	private double distance;
-    private int hitWallColor;
-    private boolean wasHitVertical;
-	boolean isRayFacingDown;
-	boolean isRayFacingUp;
-	boolean isRayFacingRight;
-	boolean isRayFacingLeft;
+    double rayAngle;
+    double wallHitX, wallHitY, distance;
+    int hitWallColor;
+    boolean wasHitVertical, isRayFacingDown, isRayFacingUp,
+            isRayFacingRight, isRayFacingLeft;
+
+
 
     public Ray(double rayAngle){
-        this.setRayAngle(normalizeAngle(rayAngle));
-        this.setWallHitX(0);
-        this.setWallHitY(0);
-        this.setDistance(0);
-        this.setHitWallColor(0);
-        this.setWasHitVertical(false);
+        this.rayAngle = normalizeAngle(rayAngle);
+        this.wallHitX = 0;
+        this.wallHitY = 0;
+        this.distance = 0;
+        this.hitWallColor = 0;
+        this.wasHitVertical = false;
 
-        this.isRayFacingDown = this.getRayAngle() > 0 && this.getRayAngle() < Math.PI;
+
+
+        this.isRayFacingDown = this.rayAngle > 0 && this.rayAngle < Math.PI;
         this.isRayFacingUp = !this.isRayFacingDown;
 
-        this.isRayFacingRight = this.getRayAngle() < 0.5 * Math.PI || this.getRayAngle() > 1.5 * Math.PI;
+        this.isRayFacingRight = this.rayAngle < 0.5 * Math.PI || this.rayAngle > 1.5 * Math.PI;
         this.isRayFacingLeft = !this.isRayFacingRight;
     }
-    
-    // getters and setters section 
-    public int getHitWallColor() {
-		return hitWallColor;
-	}
 
-    public void setHitWallColor(int hitWallColor) {
-		this.hitWallColor = hitWallColor;
-	} 
-    
-
-    public double getDistance() {
-		return distance;
-	}
-
-	public void setDistance(double distance) {
-		this.distance = distance;
-	}
-	
-	
-
-	public double getRayAngle() {
-		return rayAngle;
-	}
-
-	public void setRayAngle(double rayAngle) {
-		this.rayAngle = rayAngle;
-	}
-
-	public double getWallHitY() {
-		return wallHitY;
-	}
-
-	public void setWallHitY(double wallHitY) {
-		this.wallHitY = wallHitY;
-	}
-
-	public double getWallHitX() {
-		return wallHitX;
-	}
-
-	public void setWallHitX(double wallHitX) {
-		this.wallHitX = wallHitX;
-	}
-
-	public boolean isWasHitVertical() {
-		return wasHitVertical;
-	}
-
-	public void setWasHitVertical(boolean wasHitVertical) {
-		this.wasHitVertical = wasHitVertical;
-	}
-
-	public double normalizeAngle(double angle) {
+    public static double normalizeAngle(double angle) {
         angle = angle % (2 * Math.PI);
         if (angle < 0) {
             angle = (2 * Math.PI) + angle;
@@ -114,13 +52,13 @@ public class Ray {
         yintercept += this.isRayFacingDown ? Game.TILE_SIZE : 0;
 
         //Finding x-coordinate
-        xintercept = player.x + (yintercept - player.y)/Math.tan(this.getRayAngle());
+        xintercept = player.x + (yintercept - player.y)/Math.tan(this.rayAngle);
 
         //Calculating Delta X and Delta Y for DDA checking
         ystep = Game.TILE_SIZE;
         ystep*= this.isRayFacingUp ? -1 : 1;
 
-        xstep = Game.TILE_SIZE/Math.tan(this.getRayAngle());
+        xstep = Game.TILE_SIZE/Math.tan(this.rayAngle);
         xstep *= (this.isRayFacingLeft && xstep > 0) ? -1 : 1;
         xstep *= (this.isRayFacingRight && xstep < 0) ? -1 : 1;
 
@@ -162,13 +100,13 @@ public class Ray {
         xintercept += this.isRayFacingRight ? Game.TILE_SIZE : 0;
 
         //Finding y-coordinate
-        yintercept = player.y + (xintercept - player.x) * Math.tan(this.getRayAngle());
+        yintercept = player.y + (xintercept - player.x) * Math.tan(this.rayAngle);
 
         //Calculating xstep and ystep
         xstep = Game.TILE_SIZE;
         xstep *= this.isRayFacingLeft ? -1 : 1;
 
-        ystep = Game.TILE_SIZE * Math.tan(this.getRayAngle());
+        ystep = Game.TILE_SIZE * Math.tan(this.rayAngle);
         ystep *= (this.isRayFacingUp && ystep > 0) ? -1 : 1;
         ystep *= (this.isRayFacingDown && ystep < 0) ? -1 : 1;
 
@@ -205,20 +143,18 @@ public class Ray {
                 ? distanceBetweenPoints(player.x, player.y,
                 vertWallHitX, vertWallHitY) : 9045834;
 
-        //store the smallest values
-        this.setWallHitX((horzHitDistance < vertHitDistance) ? horzWallHitX : vertWallHitX);
-        this.setWallHitY((horzHitDistance < vertHitDistance) ? horzWallHitY : vertWallHitY);
-        this.setDistance((horzHitDistance < vertHitDistance) ? horzHitDistance : vertHitDistance);
-        this.setHitWallColor((horzHitDistance < vertHitDistance) ? horzWallColor : vertWallColor);
-        this.setWasHitVertical((vertHitDistance < horzHitDistance));
+        //store the smalles values
+        this.wallHitX = (horzHitDistance < vertHitDistance) ? horzWallHitX : vertWallHitX;
+        this.wallHitY = (horzHitDistance < vertHitDistance) ? horzWallHitY : vertWallHitY;
+        this.distance = (horzHitDistance < vertHitDistance) ? horzHitDistance : vertHitDistance;
+        this.hitWallColor = (horzHitDistance < vertHitDistance) ? horzWallColor : vertWallColor;
+        this.wasHitVertical = (vertHitDistance < horzHitDistance);
 
         //this.wallIndex = Game.mapIndexAt(wallHitX,wallHitY);
 
     }
 
-    public double distanceBetweenPoints(double x1, double y1, double x2, double y2) {
+    public static double distanceBetweenPoints(double x1, double y1, double x2, double y2) {
         return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
     }
-
-	
 }
