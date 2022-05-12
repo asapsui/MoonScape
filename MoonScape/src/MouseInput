@@ -18,9 +18,9 @@ public class MouseInput implements MouseListener {
 		int mx = e.getX();
 		int my = e.getY();
 		
-//		Rectangle playButton = new Rectangle(Game.WIDTH / 2 + 400, 350, 100, 50);
-//		Rectangle helpButton = new Rectangle(Game.WIDTH / 2 + 400, 450, 100, 50);
-//		Rectangle quitButton = new Rectangle(Game.WIDTH / 2 + 400, 550, 100, 50);
+		Rectangle playButton = new Rectangle(Game.WIDTH / 2 + 400, 350, 100, 50);
+		Rectangle helpButton = new Rectangle(Game.WIDTH / 2 + 400, 450, 100, 50);
+		Rectangle quitButton = new Rectangle(Game.WIDTH / 2 + 400, 550, 100, 50);
 		
 		if (mx >= 400 && mx <= 500) {
 			if (my >= 350 && my <= 400) {
@@ -31,11 +31,11 @@ public class MouseInput implements MouseListener {
 			}
 		}
 		
-//		if (mx >= 400 && mx <= 500) {
-//			if (my >= 550 && my <= 600) {
-//				System.exit(0);
-//			}
-//		}
+		if (mx >= 400 && mx <= 500) {
+			if (my >= 550 && my <= 600) {
+				System.exit(0);
+			}
+		}
 		
 	}
 
