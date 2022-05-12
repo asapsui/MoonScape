@@ -3,7 +3,6 @@
  * The mobs aren't the best at finding the player, once it hits a wall. (Need to fix the math)
  * 
  */
-package main;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ public class Mob extends Sprite {
 	int beginWalking = 1;
 	
 	// every shot we decrease the enemies speed by like .10
-    public static Mob guard1 = new Mob(guardMovement.get(Movement.Standing).location, 64, 250, 450, 3.5);
+    public static Mob guard1 = new Mob(guardMovement.get(Movement.Standing).location, 64, 200, 100, 3.5);
     public static Mob guard2 = new Mob(guardMovement.get(Movement.Standing).location, 64, 300, 400, 0.30);
 
 	
@@ -72,7 +71,7 @@ public class Mob extends Sprite {
 		double angle = Math.atan2(diffY, diffX);
 		
 		// maybe play a sound to indicate that the mob is inflicting damage
-		if (checkAttackRange(diffY)) {
+		if (checkAttackRange(diffY, diffX)) {
 			speed = 0;
 			this.changeTexture(guardMovement.get(Movement.Shoot_2));
 			// should be != 0
@@ -118,8 +117,8 @@ public class Mob extends Sprite {
 	}
 	
 	// they are shooting guns, so the range can be further away
-	public boolean checkAttackRange(double distFromPlayerY) {
-		return Math.abs(distFromPlayerY) <= 150;
+	public boolean checkAttackRange(double distFromPlayerY, double distFromPlayerX) {
+		return Math.abs(distFromPlayerY) <= 150 && Math.abs(distFromPlayerX) <= 150;
 	}
 	
 	public void chooseWalk() {
