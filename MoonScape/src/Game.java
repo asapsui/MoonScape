@@ -1,5 +1,3 @@
-package main;
-
 //Mary Czelusniak
 //Ray Casting Engine
 import javax.sound.sampled.Line;
@@ -61,15 +59,15 @@ public class Game extends JFrame implements Runnable, ActionListener {
     
     public Color guardColor = new Color(152,0,136,255);
   
-    public enum STATE {
+    private enum STATE {
         MENU, GAME;
     };
 
-    public static STATE State = STATE.MENU;
+    private STATE State = STATE.MENU;
     
     private Thread thread;
     private boolean running = false;
-  public static int[][] map =
+    public static int[][] map =
             {       {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
                     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -108,13 +106,14 @@ public class Game extends JFrame implements Runnable, ActionListener {
         
         sprites = new ArrayList<Sprite>();
         sprites.add(Sprite.candlestand);
-        sprites.add(Sprite.couch);
+        sprites.add(Sprite.pillar);
         sprites.add(Sprite.fountain);
         sprites.add(Sprite.box);
+
+
         visibleSprites = new ArrayList<>();
         
-//         this.addMouseListener(new MouseInput());
-//         this.addKeyListener(new KeyInput());
+
 
         setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
         setResizable(false);
@@ -147,13 +146,11 @@ public class Game extends JFrame implements Runnable, ActionListener {
     public void run() {
     	test = System.currentTimeMillis();
     	while(running) {
-		
-            ///renderingWalls(pixels,createAllRays());
-           // renderSpriteProjection();
-           // render();
-		
+
             if (System.currentTimeMillis() - test > 350) {
+
             	mobs.get(0).update(player);
+
             	test = System.currentTimeMillis();
             }
             timer.start();
@@ -164,7 +161,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
     
     
     
-public void renderSpriteProjection(){
+    public void renderSpriteProjection(){
 
         // Very similar to wall projection, with the added check of the sprite being visible or not to the player
         // Where the visible sprites are then added to the visibleSprites ArrayList, then cleared when the method is called again
@@ -253,7 +250,7 @@ public void renderSpriteProjection(){
 
 
         }
-	
+
 
     public void renderingWalls(int[] pixels, ArrayList<Ray> rays){
 
@@ -313,49 +310,7 @@ public void renderSpriteProjection(){
 
     }
 
-// private void renderMenu() throws IOException {
-    	 
-//    	 bs = getBufferStrategy();
-//         if (bs == null){
-//             createBufferStrategy(2);
-//             return;
-//         }
-//         Graphics2D g = (Graphics2D) bs.getDrawGraphics();
-		
-// 		BufferedImage image = new BufferedImage(Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
-// 		BufferedImageLoader loader = new BufferedImageLoader();
-		
-// 		Graphics2D g2d = (Graphics2D) g;
-		
-// 		Rectangle playButton = new Rectangle(Game.WIDTH / 2 + 400, 350, 100, 50);
-// 		Rectangle helpButton = new Rectangle(Game.WIDTH / 2 + 400, 450, 100, 50);
-// 		Rectangle quitButton = new Rectangle(Game.WIDTH / 2 + 400, 550, 100, 50);
-		
-// 		try {
-// 			image = loader.loadImage("/res/space.jpg");
-// 		} catch (IOException e) {
-// 			e.printStackTrace();
-// 		}
-		
-// 		g.drawImage(image, 0, 0, Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT, null);		
-		
-// 		Font fnt0 = new Font("arial", Font.BOLD, 75);
-// 		g.setFont(fnt0);
-// 		g.setColor(Color.white);
-// 		g.drawString("MOON SCAPE", Game.WIDTH / 2 + 200, 250);
-		
-// 		Font fnt1 = new Font("arial", Font.BOLD, 30);
-// 		g.setFont(fnt1);
-// 		g.drawString("Play", playButton.x + 19, playButton.y + 30);
-// 		g2d.draw(playButton);
-// //		g.drawString("Help", helpButton.x + 19, helpButton.y + 30);
-// //		g2d.draw(helpButton);
-// 		g.drawString("Quit", quitButton.x + 19, quitButton.y + 30);
-// 		g2d.draw(quitButton);
-		
-// 		g.dispose();
-// 		bs.show();
-//    }
+
   
     private void render() {
         bs = getBufferStrategy();
