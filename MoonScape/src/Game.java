@@ -149,7 +149,9 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
             if (System.currentTimeMillis() - test > 350) {
 
-            	mobs.get(0).update(player);
+            	for (Mob mob : mobs ) {
+            		mob.update(player);
+            	}
 
             	test = System.currentTimeMillis();
             }
