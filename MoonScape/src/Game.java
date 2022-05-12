@@ -69,21 +69,21 @@ public class Game extends JFrame implements Runnable, ActionListener {
     
     private Thread thread;
     private boolean running = false;
-    public static int[][] map =
+  public static int[][] map =
             {       {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
                     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                    {1,0,0,1,0,2,0,4,0,3,0,2,0,0,1},
                     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                    {1,0,0,2,0,3,0,4,0,2,0,1,0,0,1},
-                    {1,0,0,0,0,0,0,5,0,0,0,0,0,0,1},
-                    {1,0,0,0,0,0,0,5,0,0,0,0,0,0,1},
-                    {1,0,0,0,0,0,0,5,0,0,0,0,0,0,1},
-                    {1,0,0,0,0,0,0,2,0,3,3,3,3,3,1},
-                    {1,0,0,0,0,0,0,2,0,0,0,0,0,0,1},
-                    {1,0,0,0,0,0,0,2,0,0,0,4,0,0,1},
-                    {2,0,0,0,0,0,0,2,0,0,0,0,4,4,1},
-                    {1,0,0,0,0,0,0,2,0,0,0,0,0,0,1},
+                    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                    {1,0,0,0,0,0,0,0,0,3,3,3,3,3,1},
+                    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                    {1,0,0,0,0,0,0,0,0,0,0,4,0,0,1},
+                    {2,0,0,0,0,0,0,0,0,0,0,0,4,4,1},
+                    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 
             };
@@ -147,9 +147,11 @@ public class Game extends JFrame implements Runnable, ActionListener {
     public void run() {
     	test = System.currentTimeMillis();
     	while(running) {
+		
             ///renderingWalls(pixels,createAllRays());
            // renderSpriteProjection();
            // render();
+		
             if (System.currentTimeMillis() - test > 350) {
             	mobs.get(0).update(player);
             	test = System.currentTimeMillis();
@@ -162,16 +164,19 @@ public class Game extends JFrame implements Runnable, ActionListener {
     
     
     
-    public void renderSpriteProjection(){
+public void renderSpriteProjection(){
+
         // Very similar to wall projection, with the added check of the sprite being visible or not to the player
         // Where the visible sprites are then added to the visibleSprites ArrayList, then cleared when the method is called again
         // In order to clear the screen
+
         visibleSprites.clear();
-        for(Sprite sprite : sprites){
+        for(Sprite sprite : sprites) {
             sprite.visibleSprite(player);
-            if(sprite.visible == true){
+            if (sprite.visible == true) {
                 visibleSprites.add(sprite);
             }
+        }
             
             
         for (Mob mob : mobs) {
@@ -181,18 +186,23 @@ public class Game extends JFrame implements Runnable, ActionListener {
         	}
         }
 
-        }
+
         if(visibleSprites.size() > 0) {
-            for(int i = 0; i < visibleSprites.size(); i++){
-                for (int j = 0; j < visibleSprites.size()- i - 1; j++){
-                    if(visibleSprites.get(i).distance < visibleSprites.get(i + 1).distance){
+            for (int i = 0; i < visibleSprites.size(); i++) {
+                for (int j = i + 1; j < visibleSprites.size(); j++) {
+                    if (visibleSprites.get(i).distance < visibleSprites.get(j).distance) {
                         Sprite s = visibleSprites.get(i);
-                        visibleSprites.set(i,visibleSprites.get(i + 1));
-                        visibleSprites.set(i+1,s);
+                        visibleSprites.set(i, visibleSprites.get(j));
+                        visibleSprites.set(j, s);
                     }
                 }
             }
+        }
+
+
             for (int i = 0; i < visibleSprites.size(); i++) {
+
+
 
                 double spriteAngle = Math.atan2(visibleSprites.get(i).yPosition - player.y,
                         visibleSprites.get(i).xPosition - player.x) - player.rotationAngle;
@@ -215,6 +225,8 @@ public class Game extends JFrame implements Runnable, ActionListener {
                 int TexspriteWidth = visibleSprites.get(i).SIZE;
                 int TexspriteHeight = visibleSprites.get(i).SIZE;
 
+
+
                 for (int x = (int) spriteLeftX; x < spriteRightX; x++) {
 
                     double texelWidth = (TexspriteWidth / spriteWidth);
@@ -227,25 +239,21 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
                             int texelColor = visibleSprites.get(i).pixels[((TexspriteWidth * offSetY) + offSetX)];
 
-                            // Filtering of magenta happens here, where Color.Magenta == r: 255, g: 0, b:255
-                            // Many textures I have found online do not have this specific shade, but all have a green value of zero
-                            // So maybe, in order to use those textures, change something over here so that it will filter any color
-                            // that has a G value of 0 and the two other values above 150, so to not filter out textures with the color black
-                            // Important: getRBG() returns a sRGB representation of the color, which is -65281
-                            // This is also the only line of code here where we reference the rays, so that Sprites are not rendered when we
-                            // are facing a wall and the sprite is placed behind it
 
 
-                            if ( (texelColor != guardColor.getRGB() && texelColor != Color.MAGENTA.getRGB())  && visibleSprites.get(i).distance < rays.get(x).distance)
-                           // if ( (texelColor != Color.MAGENTA.getRGB() && texelColor != darkPurple.getRGB() && texelColor != darkPink.getRGB())  && visibleSprites.get(i).distance < rays.get(x).distance)
+                            if ( (texelColor != guardColor.getRGB() && texelColor != Color.MAGENTA.getRGB())  && visibleSprites.get(i).distance < rays.get(x).distance) {
                                 pixels[x + (y * WINDOW_WIDTH)] = texelColor;
+                            }
                         }
                     }
                 }
 
             }
+
+
+
         }
-    }
+	
 
     public void renderingWalls(int[] pixels, ArrayList<Ray> rays){
 
