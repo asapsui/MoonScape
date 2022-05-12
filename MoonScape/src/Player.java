@@ -37,7 +37,7 @@ implements KeyListener {
 
         this.turnDirection = 0; // -1 if left, +1 if right
         this.walkDirection = 0; // -1 if back, +1 if front
-        this.rotationAngle = Math.PI / 2;
+        this.rotationAngle = 270 * (Math.PI/180);
         this.moveSpeed = 2;
         this.rotationSpeed = 2 * (Math.PI / 180);
         // loads in with max health
