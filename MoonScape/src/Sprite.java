@@ -9,7 +9,7 @@ import java.util.ArrayList;
 // Not doing so makes the character unable to move way before it actually gets close to the sprite
 public class Sprite extends Texture{
 
-    public static Sprite couch = new Sprite("res/objects/pillar.png", 64,400 ,500);
+    public static Sprite pillar = new Sprite("res/objects/pillar.png", 64,400 ,500);
     public static Sprite candlestand = new Sprite("res/objects/candlestand.png",64, 300, 500);
     public static Sprite fountain = new Sprite("res/objects/fountain.png",64, 200, 450);
     public static Sprite box = new Sprite("res/objects/box.png",64, 250, 450);
