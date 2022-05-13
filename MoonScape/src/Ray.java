@@ -33,7 +33,7 @@ public class Ray {
         return angle;
     }
 
-    public void cast(Player player){
+    public void cast(double x, double y){
         double xintercept, yintercept;
         double ystep, xstep;
 
@@ -47,11 +47,11 @@ public class Ray {
         int horzWallColor = 0;
 
         //Finding y-coordinate of the closest horizontal grid intersection
-        yintercept = Math.floor(player.y/Game.TILE_SIZE) * Game.TILE_SIZE;
+        yintercept = Math.floor(y/Game.TILE_SIZE) * Game.TILE_SIZE;
         yintercept += this.isRayFacingDown ? Game.TILE_SIZE : 0;
 
         //Finding x-coordinate
-        xintercept = player.x + (yintercept - player.y)/Math.tan(this.rayAngle);
+        xintercept = x + (yintercept - y)/Math.tan(this.rayAngle);
 
         //Calculating Delta X and Delta Y for DDA checking
         ystep = Game.TILE_SIZE;
@@ -77,6 +77,10 @@ public class Ray {
 
                 if(wallGridContent != 0){
                     horzWallColor = wallGridContent;
+                    if(horzWallColor == 7){
+                        horzWallHitX = nextHorzTouchX + (xstep/2);
+                        horzWallHitY = nextHorzTouchY + (ystep/2);
+                    }
                 }
                 break;
             }
@@ -85,6 +89,8 @@ public class Ray {
                 nextHorzTouchY += ystep;
             }
         }
+
+
         /////////////////////////////////////
         // VERTICAL GRID INTERSECTION DDA  //
         /////////////////////////////////////
@@ -95,11 +101,11 @@ public class Ray {
         int vertWallColor = 0;
 
         //Finding x-coordinate of the closest horizontal grid intersection
-        xintercept = Math.floor(player.x/Game.TILE_SIZE) * Game.TILE_SIZE;
+        xintercept = Math.floor(x/Game.TILE_SIZE) * Game.TILE_SIZE;
         xintercept += this.isRayFacingRight ? Game.TILE_SIZE : 0;
 
         //Finding y-coordinate
-        yintercept = player.y + (xintercept - player.x) * Math.tan(this.rayAngle);
+        yintercept = y + (xintercept - x) * Math.tan(this.rayAngle);
 
         //Calculating xstep and ystep
         xstep = Game.TILE_SIZE;
@@ -127,6 +133,10 @@ public class Ray {
 
                 if(wallGridContent != 0){
                     vertWallColor = wallGridContent;
+                    if(vertWallColor == 7){
+                        vertWallHitX = nextVertTouchX + (xstep/2);
+                        vertWallHitY = nextVertTouchY + (ystep/2);
+                    }
                 }
 
                 break;
@@ -135,19 +145,33 @@ public class Ray {
                 nextVertTouchY += ystep;
             }
         }
+
         // Calculating the size of both horizontal and vertical interception
-        double horzHitDistance = (foundHorzWallHit) ? distanceBetweenPoints(player.x,
-                player.y, horzWallHitX, horzWallHitY) : 34535;
+        double horzHitDistance = (foundHorzWallHit) ? distanceBetweenPoints(x,
+                y, horzWallHitX, horzWallHitY) : 34535;
         double vertHitDistance = (foundVertWallHit)
-                ? distanceBetweenPoints(player.x, player.y,
+                ? distanceBetweenPoints(x, y,
                 vertWallHitX, vertWallHitY) : 9045834;
+
+
+//        if(vertWallColor == 2 || horzWallColor == 2){
+//           horzHitDistance = (foundHorzWallHit) ? distanceBetweenPoints(x,
+//            y, horzWallHitX + 32, horzWallHitY + 32) : 34535;
+//           vertHitDistance = (foundVertWallHit)
+//                    ? distanceBetweenPoints(x, y,
+//                    vertWallHitX + 32, vertWallHitY + 32) : 9045834;
+//        }
+
 
         //store the smalles values
         this.wallHitX = (horzHitDistance < vertHitDistance) ? horzWallHitX : vertWallHitX;
         this.wallHitY = (horzHitDistance < vertHitDistance) ? horzWallHitY : vertWallHitY;
+
+
         this.distance = (horzHitDistance < vertHitDistance) ? horzHitDistance : vertHitDistance;
         this.hitWallColor = (horzHitDistance < vertHitDistance) ? horzWallColor : vertWallColor;
         this.wasHitVertical = (vertHitDistance < horzHitDistance);
+
 
         //this.wallIndex = Game.mapIndexAt(wallHitX,wallHitY);
 
