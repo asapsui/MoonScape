@@ -448,7 +448,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
         	//Formula for adjusting very slight wall distortion
             //double rayAngle = player.rotationAngle + Math.atan((i - NUM_RAYS/2)/((WINDOW_WIDTH / 2) / (Math.tan(FOV_ANGLE / 2))));
         	Ray ray = new Ray(rayAngle);
-            ray.cast(player);
+            ray.cast(player.x, player.y);
             rays.add(ray);
             rayAngle += FOV_ANGLE/NUM_RAYS;
 
