@@ -11,6 +11,7 @@ import java.util.Timer;
 
 public class Mob extends Sprite {
 
+
 	// this will never change
 	enum Movement{
 		Standing, 
@@ -18,7 +19,7 @@ public class Mob extends Sprite {
 		Shoot_1, Shoot_2
 	}
 		
-	public static Hashtable<Mob.Movement, Texture> guardMovement = new Hashtable<>(){{
+	public static Hashtable<Movement, Texture> guardMovement = new Hashtable<>(){{
 		put(Movement.Standing, new Texture("res/guard/mguard_s_1.bmp", 64));
 		put(Movement.Walk_1, new Texture("res/guard/mguard_w1_1.bmp", 64));
 		put(Movement.Walk_2, new Texture("res/guard/mguard_w2_1.bmp", 64));
@@ -37,14 +38,18 @@ public class Mob extends Sprite {
 	int beginWalking = 1;
 	
 	// every shot we decrease the enemies speed by like .10
-    public static Mob guard1 = new Mob(guardMovement.get(Movement.Standing).location, 64, 200, 100, 3.5);
+    public static Mob guard1 = new Mob(guardMovement.get(Movement.Standing).location, 64, 200, 100, 3);
     public static Mob guard2 = new Mob(guardMovement.get(Movement.Standing).location, 64, 300, 400, 0.30);
 
-	
+
+	public final int textureOffset = 10;
+	public final int SHOOT_RANGE = 150;
+
     // this'll be used for when the player has killed a mob
 		// 	we will remove it from the arraylist and stop rendering it
 	public boolean removed;
-	
+
+	double startingPosX, startingPosY;
 	// all mobs will start out with the standing image
 	public Mob(String location, int size, double x, double y, double speed) {
 		super(location, size, x, y);
@@ -59,17 +64,15 @@ public class Mob extends Sprite {
 		//wait(60);
 		double moveX = player.getX();
 		double moveY = player.getY();
-		
+
 		double diffX = moveX - xPosition;
-//		System.out.println("Mob's X: " + xPosition);
-//		System.out.println("Players X: " + player.getX());
+
 		double diffY = moveY - yPosition;
-//		System.out.println("Mob's Y: " + yPosition);
-//		System.out.println("Players Y: " + player.getY());
+
 
 		// for the change in position we need to be getting the players angle
 		double angle = Math.atan2(diffY, diffX);
-		
+
 		// maybe play a sound to indicate that the mob is inflicting damage
 		if (checkAttackRange(diffY, diffX)) {
 			speed = 0;
@@ -81,31 +84,38 @@ public class Mob extends Sprite {
 				//player.drawHealthbar(g);
 				System.out.println(player.health);
 			}
-		}
-		else {
+		} else {
 			// change the walk between the 4 walk types
-			speed = constantSpeed; 
+			speed = constantSpeed;
 			chooseWalk();
 			if (walk != 4) {
 				walk++;
-			}
-			else {
+			} else {
 				walk = beginWalking;
 			}
 		}
+		double newXPos = speed * Math.cos(angle) + this.xPosition;
+		double newYPos = speed * Math.sin(angle) + this.yPosition;
 
 		// this doesn't work correctly
-		if (Game.hasWallAt(xPosition, yPosition)) {
-			yPosition += speed * 0.5;
-        }  
-		
-		if (!Game.hasWallAt(xPosition, yPosition)) {
-			if (xPosition != player.getX() || yPosition != player.getY()) {
-				this.xPosition += speed * Math.cos(angle);
-	        	this.yPosition += speed * Math.sin(angle);
-			}
-			
-        }  
+		if (!Game.hasWallAt(newXPos , newYPos ) && (xPosition != player.getX() || yPosition != player.getY()) ) {
+			this.xPosition = newXPos;
+			this.yPosition = newYPos;
+			//System.out.println("guard is walking");
+		}else{
+			this.changeTexture(guardMovement.get(Movement.Standing));
+
+		}
+
+//		else if (!Game.hasWallAt(newXPos, newYPos)) {
+//			if (xPosition != player.getX() || yPosition != player.getY()) {
+//				this.xPosition = newXPos;
+//				this.yPosition = newYPos;
+//
+//
+//			}
+//		}
+
 	}
 	
 	public double getSpeed() {
@@ -118,7 +128,7 @@ public class Mob extends Sprite {
 	
 	// they are shooting guns, so the range can be further away
 	public boolean checkAttackRange(double distFromPlayerY, double distFromPlayerX) {
-		return Math.abs(distFromPlayerY) <= 150 && Math.abs(distFromPlayerX) <= 150;
+		return Math.abs(distFromPlayerY) <= SHOOT_RANGE && Math.abs(distFromPlayerX) <= SHOOT_RANGE;
 	}
 	
 	public void chooseWalk() {
@@ -148,5 +158,15 @@ public class Mob extends Sprite {
     public void setVisibility(Boolean removed) {
         this.removed = removed;
     }
+
+	public Ray rangeOfView (Player player){
+
+		double moveX = player.getX();
+		double moveY = player.getY();
+		double diffX = moveX - xPosition;
+		double diffY = moveY - yPosition;
+		double angle = Math.atan2(diffY, diffX);
+		return new Ray(angle);
+	}
   
 }
