@@ -156,7 +156,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
                 if (System.currentTimeMillis() - test > 350) {
 
                     for (Mob mob : mobs ) {
-                        mob.update(player);
+                        enemies(mob);
                     }
 
                     test = System.currentTimeMillis();
@@ -175,26 +175,19 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
     }
 
-    public void enemies(){
-        long x = System.currentTimeMillis();
-            for(Mob mo : mobs){
+    public void enemies(Mob mo){
 
-                Ray mobToPlayer = mo.rangeOfView(player);
-                mobToPlayer.cast(mo.xPosition, mo.yPosition);
-                double mobToPlayerDistance = Ray.distanceBetweenPoints(mobs.get(0).xPosition, mobs.get(0).yPosition,player.x,player.y);
-                double mobToWallDistance = Ray.distanceBetweenPoints(mobs.get(0).xPosition, mobs.get(0).yPosition, mobToPlayer.wallHitX, mobToPlayer.wallHitY);
 
-                if(mobToPlayerDistance < mobToWallDistance){
+            Ray mobToPlayer = mo.rangeOfView(player);
+            mobToPlayer.cast(mo.xPosition, mo.yPosition);
+            double mobToPlayerDistance = Ray.distanceBetweenPoints(mobs.get(0).xPosition, mobs.get(0).yPosition,player.x,player.y);
+            double mobToWallDistance = Ray.distanceBetweenPoints(mobs.get(0).xPosition, mobs.get(0).yPosition, mobToPlayer.wallHitX, mobToPlayer.wallHitY);
 
-                    if (System.currentTimeMillis() - x > 350) {
+            if(mobToPlayerDistance < mobToWallDistance){
 
-                        mo.update(player);
-
-                        x = System.currentTimeMillis();
-                    }
-
-                }
+                    mo.update(player);
             }
+
     }
 
 
@@ -214,10 +207,10 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
 
         for (Mob mob : mobs) {
-        	mob.visibleSprite(player);
-        	if (mob.visible) {
-        		visibleSprites.add(mob);
-        	}
+            mob.visibleSprite(player);
+            if (mob.visible) {
+                visibleSprites.add(mob);
+            }
         }
 
 
@@ -286,7 +279,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
 
 
-        }
+    }
 
 
     public void renderingWalls(int[] pixels, ArrayList<Ray> rays){
@@ -360,8 +353,8 @@ public class Game extends JFrame implements Runnable, ActionListener {
                     texColor = textures.get(textNum).pixels[((textures.get(textNum).SIZE) * offSetY) + offSetX];
 
                 }
-                    //I have no idea why the fuck this "else" line works but it does
-                    //it shades the horizontal sides of the walls a darker shade.
+                //I have no idea why the fuck this "else" line works but it does
+                //it shades the horizontal sides of the walls a darker shade.
                 else {
                     texColor = (textures.get(textNum).pixels[((textures.get(textNum).SIZE) * offSetY) + offSetX] >> 1) & 8355711;
                 }
@@ -461,7 +454,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
             }
         }
 
- //       // Figuring out the MOB ray
+        //       // Figuring out the MOB ray
 //        Ray yy = mobs.get(0).rangeOfView(player);
 //        yy.cast(mobs.get(0).xPosition, mobs.get(0).yPosition);
 //        g.setColor(Color.MAGENTA);
@@ -507,9 +500,9 @@ public class Game extends JFrame implements Runnable, ActionListener {
         test.cast(player.x, player.y);
         g.setColor(Color.GREEN);
         g.draw(new Line2D.Double(MINIMAP_SCALE_FACTOR * player.x,
-                                 MINIMAP_SCALE_FACTOR * player.y,
-                                 MINIMAP_SCALE_FACTOR * test.wallHitX,
-                                 MINIMAP_SCALE_FACTOR * test.wallHitY));
+                MINIMAP_SCALE_FACTOR * player.y,
+                MINIMAP_SCALE_FACTOR * test.wallHitX,
+                MINIMAP_SCALE_FACTOR * test.wallHitY));
 
 
         g.dispose();
@@ -522,9 +515,9 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
         double rayAngle = player.rotationAngle - (FOV_ANGLE/2);
         for (int i = 0; i < NUM_RAYS; i++){
-        	//Formula for adjusting very slight wall distortion
+            //Formula for adjusting very slight wall distortion
             //double rayAngle = player.rotationAngle + Math.atan((i - NUM_RAYS/2)/((WINDOW_WIDTH / 2) / (Math.tan(FOV_ANGLE / 2))));
-        	Ray ray = new Ray(rayAngle);
+            Ray ray = new Ray(rayAngle);
             ray.cast(player.x,player.y);
             rays.add(ray);
             rayAngle += FOV_ANGLE/NUM_RAYS;
@@ -560,10 +553,10 @@ public class Game extends JFrame implements Runnable, ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-    	renderingWalls(pixels,createAllRays());
+        renderingWalls(pixels,createAllRays());
         renderSpriteProjection();
-    	player.update(map);
-        enemies();
+        player.update(map);
+       // enemies();
 
         render();
 
