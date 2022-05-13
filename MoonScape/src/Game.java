@@ -11,6 +11,7 @@ import java.awt.geom.Line2D;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Game extends JFrame implements Runnable, ActionListener {
@@ -75,7 +76,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
                     {1,0,0,0,0,0,0,1,0,0,0,0,0,0,1},
                     {1,0,0,0,0,0,0,1,0,0,0,0,0,0,1},
                     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                    {1,0,0,0,1,1,1,0,0,0,0,0,0,0,1},
+                    {1,0,0,0,0,1,1,0,0,0,0,0,0,0,1},
                     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
                     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
                     {1,0,0,0,0,0,0,0,0,3,3,3,3,3,1},
@@ -117,7 +118,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
         visibleSprites = new ArrayList<>();
 
         this.addMouseListener(new MouseInput());
-        this.addKeyListener(new KeyInput());
+        this.addKeyListener(new  KeyInput());
 
         setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
         setResizable(false);
@@ -148,23 +149,34 @@ public class Game extends JFrame implements Runnable, ActionListener {
     }
     @Override
     public void run() {
-    	test = System.currentTimeMillis();
-    	while(running) {
+        test = System.currentTimeMillis();
+        while(running) {
 
-//            if (System.currentTimeMillis() - test > 350) {
-//
-//            	//mobs.get(0).update(player);
-//
-//            	//test = System.currentTimeMillis();
-//            }
-            timer.start();
+            if (State == Game.STATE.GAME) {
+                if (System.currentTimeMillis() - test > 350) {
+
+                    for (Mob mob : mobs ) {
+                        mob.update(player);
+                    }
+
+                    test = System.currentTimeMillis();
+                }
+                timer.start();
+            }
+            else if (State == Game.STATE.MENU) {
+                try {
+                    renderMenu();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
         }
 
     }
 
     public void enemies(){
-
+        long x = System.currentTimeMillis();
             for(Mob mo : mobs){
 
                 Ray mobToPlayer = mo.rangeOfView(player);
@@ -174,11 +186,11 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
                 if(mobToPlayerDistance < mobToWallDistance){
 
-                    if (System.currentTimeMillis() - test > 350) {
+                    if (System.currentTimeMillis() - x > 350) {
 
                         mo.update(player);
 
-                        test = System.currentTimeMillis();
+                        x = System.currentTimeMillis();
                     }
 
                 }
