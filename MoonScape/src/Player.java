@@ -1,15 +1,15 @@
-package main;
+
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Hashtable;
 
-public class Player  
+public class Player
 implements KeyListener {
-	
+
 	double x;
     double y;
-	
+
     int turnDirection; // -1 for left, +1 for right
     int walkDirection; // -1 for walking backwards(up),// +1 for walking forwards(down)
     public double rotationAngle;
@@ -18,7 +18,7 @@ implements KeyListener {
     public int health;
     public int maxHealth;
     public static Texture currentHealthImage;
-    
+
 	public static Hashtable<Integer, Texture> HealthTable = new Hashtable<>(){{
 		put(8, new Texture("res/healthbar/8.png", 300));
 		put(7, new Texture("res/healthbar/7.png", 300));
@@ -30,14 +30,16 @@ implements KeyListener {
 		put(1, new Texture("res/healthbar/1.png", 300));
 		put(0, new Texture("res/healthbar/0.png", 300));
 	}};
- 
+
     public Player(){
         this.x = 200;
         this.y = 800;
 
         this.turnDirection = 0; // -1 if left, +1 if right
         this.walkDirection = 0; // -1 if back, +1 if front
+
         this.rotationAngle = 270 * (Math.PI/180);
+
         this.moveSpeed = 2;
         this.rotationSpeed = 2 * (Math.PI / 180);
         // loads in with max health
@@ -47,7 +49,7 @@ implements KeyListener {
     }
     public void update(int[][]map){
         this.rotationAngle += this.turnDirection * this.rotationSpeed;
-	this.rotationAngle = Ray.normalizeAngle(rotationAngle);
+        this.rotationAngle = Ray.normalizeAngle(rotationAngle);
         var moveStep = this.walkDirection * this.moveSpeed;
         var newPlayerX = this.x + Math.cos(this.rotationAngle) * moveStep;
         var newPlayerY = this.y + Math.sin(this.rotationAngle) * moveStep;
@@ -56,8 +58,8 @@ implements KeyListener {
             this.x = newPlayerX;
             this.y = newPlayerY;
         }
-        
-        
+
+
         // since we are updating the players position 60 times per second
         if (health != 0 && maxHealth != 0) {
 	        if (health < maxHealth) {
@@ -70,7 +72,7 @@ implements KeyListener {
         else {
         	currentHealthImage = HealthTable.get(0);
         }
-        
+
     }
 
     public double getX(){
@@ -86,7 +88,7 @@ implements KeyListener {
     public double vectorY(){
         return this.y+ Math.sin(this.rotationAngle) * 30;
     }
-    
+
     public void drawHealthbar(Graphics g) {
         g.drawImage(currentHealthImage.getImage(), 10, 800, null);
     }
@@ -128,3 +130,4 @@ implements KeyListener {
         }
     }
 }
+

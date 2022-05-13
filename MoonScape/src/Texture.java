@@ -1,4 +1,4 @@
-package main;
+
 import javax.imageio.ImageIO;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -50,5 +50,7 @@ public class Texture {
     public static Texture bluestone = new Texture("res/bluestone.png", 64);
     public static Texture stone = new Texture("res/greystone.png", 64);
     public static Texture moon = new Texture("res/moon.png", 64);
+    public static Texture door = new Texture("res/door.png", 64);
+    public static Texture doorWall = new Texture("res/doorWall.png", 64);
 
 }

@@ -1,4 +1,3 @@
-package main;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 // Mary Czelusniak
@@ -9,10 +8,10 @@ import java.util.ArrayList;
 // Not doing so makes the character unable to move way before it actually gets close to the sprite
 public class Sprite extends Texture{
 
-    public static Sprite pillar = new Sprite("res/objects/pillar.png", 64,400 ,500);
-    public static Sprite candlestand = new Sprite("res/objects/candlestand.png",64, 300, 500);
-    public static Sprite fountain = new Sprite("res/objects/fountain.png",64, 200, 450);
-    public static Sprite box = new Sprite("res/objects/box.png",64, 250, 450);
+    public static Sprite pillar = new Sprite("res/objects/pillar.png", 64,600 ,700);
+    public static Sprite candlestand = new Sprite("res/objects/candlestand.png",64, 500, 520);
+    public static Sprite fountain = new Sprite("res/objects/fountain.png",64, 600, 450);
+    public static Sprite box = new Sprite("res/objects/box.png",64, 700, 450);
 
 
     double xPosition, yPosition, distance, angle;
@@ -24,6 +23,9 @@ public class Sprite extends Texture{
         this.xPosition = x;
         this.yPosition = y;
     }
+
+
+
     public void visibleSprite (Player player){
             double angleSpritePlayer = player.rotationAngle - Math.atan2(this.yPosition - player.y,
                     this.xPosition - player.x);
@@ -47,4 +49,6 @@ public class Sprite extends Texture{
     }
 
 
+
 }
+
