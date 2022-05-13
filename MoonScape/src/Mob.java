@@ -38,6 +38,7 @@ public class Mob extends Sprite {
 	int beginWalking = 1;
 	
 	// every shot we decrease the enemies speed by like .10
+
     public static Mob guard1 = new Mob(guardMovement.get(Movement.Standing).location, 64, 200, 100, 3);
     public static Mob guard2 = new Mob(guardMovement.get(Movement.Standing).location, 64, 300, 400, 0.30);
 
@@ -50,6 +51,7 @@ public class Mob extends Sprite {
 	public boolean removed;
 
 	double startingPosX, startingPosY;
+
 	// all mobs will start out with the standing image
 	public Mob(String location, int size, double x, double y, double speed) {
 		super(location, size, x, y);
@@ -65,6 +67,7 @@ public class Mob extends Sprite {
 		double moveX = player.getX();
 		double moveY = player.getY();
 
+
 		double diffX = moveX - xPosition;
 
 		double diffY = moveY - yPosition;
@@ -72,6 +75,7 @@ public class Mob extends Sprite {
 
 		// for the change in position we need to be getting the players angle
 		double angle = Math.atan2(diffY, diffX);
+
 
 		// maybe play a sound to indicate that the mob is inflicting damage
 		if (checkAttackRange(diffY, diffX)) {
@@ -84,6 +88,7 @@ public class Mob extends Sprite {
 				//player.drawHealthbar(g);
 				System.out.println(player.health);
 			}
+
 		} else {
 			// change the walk between the 4 walk types
 			speed = constantSpeed;
@@ -116,6 +121,7 @@ public class Mob extends Sprite {
 //			}
 //		}
 
+
 	}
 	
 	public double getSpeed() {
@@ -128,7 +134,9 @@ public class Mob extends Sprite {
 	
 	// they are shooting guns, so the range can be further away
 	public boolean checkAttackRange(double distFromPlayerY, double distFromPlayerX) {
+
 		return Math.abs(distFromPlayerY) <= SHOOT_RANGE && Math.abs(distFromPlayerX) <= SHOOT_RANGE;
+
 	}
 	
 	public void chooseWalk() {
@@ -159,6 +167,7 @@ public class Mob extends Sprite {
         this.removed = removed;
     }
 
+
 	public Ray rangeOfView (Player player){
 
 		double moveX = player.getX();
@@ -168,5 +177,6 @@ public class Mob extends Sprite {
 		double angle = Math.atan2(diffY, diffX);
 		return new Ray(angle);
 	}
+
   
 }

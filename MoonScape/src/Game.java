@@ -1,3 +1,4 @@
+
 //Mary Czelusniak
 //TODO: AAAAAAAAAAAAAAAA
 //Ray Casting Engine
@@ -60,11 +61,11 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
     public Color guardColor = new Color(152,0,136,255);
 
-    private enum STATE {
+    public enum STATE {
         MENU, GAME;
     };
 
-    private STATE State = STATE.MENU;
+    public static STATE State = STATE.MENU;
 
     private Thread thread;
     private boolean running = false;
@@ -369,6 +370,49 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
     }
 
+      private void renderMenu() throws IOException {
+   	 
+      	 bs = getBufferStrategy();
+           if (bs == null){
+               createBufferStrategy(2);
+               return;
+           }
+           Graphics2D g = (Graphics2D) bs.getDrawGraphics();
+   		
+   		BufferedImage image = new BufferedImage(Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
+   		BufferedImageLoader loader = new BufferedImageLoader();
+   		
+   		Graphics2D g2d = (Graphics2D) g;
+   		
+   		Rectangle playButton = new Rectangle(Game.WIDTH / 2 + 400, 350, 100, 50);
+//   		Rectangle helpButton = new Rectangle(Game.WIDTH / 2 + 400, 450, 100, 50);
+   		Rectangle quitButton = new Rectangle(Game.WIDTH / 2 + 400, 550, 100, 50);
+   		
+   		try {
+   			image = loader.loadImage("res/space.jpg");
+   		} catch (IOException e) {
+   			e.printStackTrace();
+   		}
+   		
+   		g.drawImage(image, 0, 0, Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT, null);		
+   		
+   		Font fnt0 = new Font("arial", Font.BOLD, 75);
+   		g.setFont(fnt0);
+   		g.setColor(Color.white);
+   		g.drawString("MOON SCAPE", Game.WIDTH / 2 + 200, 250);
+   		
+   		Font fnt1 = new Font("arial", Font.BOLD, 30);
+   		g.setFont(fnt1);
+   		g.drawString("Play", playButton.x + 19, playButton.y + 30);
+   		g2d.draw(playButton);
+//   		g.drawString("Help", helpButton.x + 19, helpButton.y + 30);
+//   		g2d.draw(helpButton);
+   		g.drawString("Quit", quitButton.x + 19, quitButton.y + 30);
+   		g2d.draw(quitButton);
+   		
+   		g.dispose();
+   		bs.show();
+      }
 
 
     private void render() {
