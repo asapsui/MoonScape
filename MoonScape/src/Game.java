@@ -20,9 +20,11 @@ public class Game extends JFrame implements Runnable, ActionListener {
     //////////////////////////
     public static final int TILE_SIZE = 64;
     public static final int MAP_NUM_ROWS = 15;
-    public static final int MAP_NUM_COLS = 15;
-    public static final int WINDOW_HEIGHT = MAP_NUM_ROWS * TILE_SIZE;
-    public static final int WINDOW_WIDTH = MAP_NUM_COLS * TILE_SIZE;
+    public static final int MAP_NUM_COLS = 25;
+
+    public static final int WINDOW_HEIGHT =  1000 ;//MAP_NUM_ROWS * TILE_SIZE;
+    public static final int WINDOW_WIDTH =   1280 ;//MAP_NUM_COLS * TILE_SIZE;
+
 
     ////////////////////////////
     // UNUSED MINIMAP CONSTANT//
@@ -52,7 +54,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
 
     public static ArrayList<Mob> mobs;
-    public ArrayList<Sprite> sprites;
+    public static ArrayList<Sprite> sprites;
     public ArrayList<Sprite> visibleSprites;
     public double playerDistance = (WINDOW_WIDTH / 2) / (Math.tan(FOV_ANGLE / 2));
 
@@ -70,23 +72,24 @@ public class Game extends JFrame implements Runnable, ActionListener {
     private Thread thread;
     private boolean running = false;
     public static int[][] map =
-            {       {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                    {1,0,0,0,0,0,0,1,0,0,0,0,0,0,1},
-                    {1,0,0,0,0,0,0,1,0,0,0,0,0,0,1},
-                    {1,0,0,0,0,0,0,1,0,0,0,0,0,0,1},
-                    {1,0,0,0,0,0,0,1,0,0,0,0,0,0,1},
-                    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                    {1,0,0,0,0,1,1,0,0,0,0,0,0,0,1},
-                    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                    {1,0,0,0,0,0,0,0,0,3,3,3,3,3,1},
-                    {1,0,66,7,66,0,0,0,0,0,0,0,0,0,1},
-                    {69,0,0,0,0,0,0,0,0,0,0,4,0,0,1},
-                    {7,0,0,0,0,0,0,7,0,0,0,0,4,4,1},
-                    {69,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+            {       {5  ,  14,  14,  14,  13,  14,  5,  5,   5,  5,  5,  8,  9,  8,  4,  8,  9,  4,  4,  8,  4,  8,  9,  4,  4},
+                    {12  ,  0,  0,  0,  0,  0,  2,  0,   0,  1,  4,  0,  0,  0,  16,  0,  0,  0,  0,  0,  0,  0,  0, 0,  15},
+                    {13  ,  0,  0,  0,  0,  0,  2,  0,   0,  4,  0,  0,  0,  0,  9,  9,  4,  4,  4,  8,  4,  9,  4, 4,  4},
+                    {14  ,  0,  0,  2,  22, 7,  22,  0,  0,  4,  0,  0,  0,  0,  4,  0,  0,  0,  0,  0,  0,  0,  10, 12,  14},
+                    {14  ,  0,  2,  0,  0,  0,  0,  0,   0,  4,  4,  4,  0,  0,  4,  0,  0,  0,  0,  0,  0,  0,  10,  0,  10},
+                    {14  ,  0,  2,  0,  0,  0,  0,  0,   0,  0,  0,  0,  0,  0,  4,  0,  0,  0,  0,  0,  0,  0,  12,  0,  13},
+                    {5  ,  1,  0,  0,  0,  0,  0,  0,   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  10,  10,13,  10, 0,  0,  14},
+                    {5  ,  0,  0,  0,  0,  0,  0,  0,   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  10,  0,  0,  0,  0,  0,  14},
+                    {5  ,  0,  0,  0,  0,  0,  0,  0,   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  12,  0,  0,  0,  0,  0,  10},
+                    {5  ,  0,  0,  0,  0,  0,  0,  0,   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  14,  0,  0,  0,  0,  0,  11},
+                    {3  ,  3 ,66,  7  ,66 ,3  ,3,  0  , 0,  0,  1,  10, 14, 10,  14 ,10, 12, 10, 0,  0,  0,  0,  0,  0,  10},
+                    {3,    0,  0,  0,  0,  0,  69, 0,   0,  0,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  14},
+                    {3,    0,  0,  0,  0,  0,  7,  0,   0,  0,  7,   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  12},
+                    {3,    0,  0,  0,  0,  0,  69, 0,   0,  0,  100,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  13,  5},
+                    {3  ,  3,  3,  3,  3,  3,  3,  5,   5,  5,  5,  14,  14,  14,  14,  14,  14,  14,  14,  14,  14,  14,  14,  14,  5}
 
             };
+
     Game(){
         thread = new Thread(this);
 
@@ -94,14 +97,28 @@ public class Game extends JFrame implements Runnable, ActionListener {
         pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 
         textures = new ArrayList<Texture>();
-        textures.add(Texture.wood);
-        textures.add(Texture.brick);
-        textures.add(Texture.bluestone);
-        textures.add(Texture.stone);
-        textures.add(Texture.moon);
-        textures.add(Texture.doorWall);
-        textures.add(Texture.door);
+        textures.add(Texture.blueBall); //1
+        textures.add(Texture.greyPanel2); //2
 
+
+        textures.add(Texture.bluestone); //3
+
+        textures.add(Texture.spaceShip); //4
+        textures.add(Texture.moon); // 5
+
+
+        textures.add(Texture.doorWall);//6
+        textures.add(Texture.door);//7
+
+        textures.add(Texture.spaceShip2);//8
+        textures.add(Texture.spaceShip1);//9
+        textures.add(Texture.bigSpaceShip);//10
+        textures.add(Texture.bigSpaceShip1);//11
+        textures.add(Texture.bigSpaceShip2);//12
+        textures.add(Texture.bigSpaceShip3);//13
+        textures.add(Texture.bigSpaceShip4);//14
+        textures.add(Texture.escape); //15
+        textures.add(Texture.escapeDoor);//16
 
         // add more mobs
         mobs = new ArrayList<Mob>();
@@ -110,14 +127,29 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
         sprites = new ArrayList<Sprite>();
         sprites.add(Sprite.candlestand);
+        sprites.add(Sprite.candlestand2);
         sprites.add(Sprite.pillar);
+        sprites.add(Sprite.pillar2);
+        sprites.add(Sprite.bracelet);
+        sprites.add(Sprite.pot);
+        sprites.add(Sprite.barrel);
+        sprites.add(Sprite.barrel2);
         sprites.add(Sprite.fountain);
+        sprites.add(Sprite.fountain2);
         sprites.add(Sprite.box);
+        sprites.add(Sprite.blueLight2);
+        sprites.add(Sprite.blueLight3);
+        sprites.add(Sprite.blueLight4);
+        sprites.add(Sprite.plantInPot);
+        sprites.add(Sprite.blueLight);
+        sprites.add(Sprite.fancyBarrel);
+        sprites.add(Sprite.fancyBarrel2);
 
 
         visibleSprites = new ArrayList<>();
 
         this.addMouseListener(new MouseInput());
+
 
         setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
         setResizable(false);
@@ -149,9 +181,10 @@ public class Game extends JFrame implements Runnable, ActionListener {
     @Override
     public void run() {
         test = System.currentTimeMillis();
+
         while(running) {
 
-            if (State == Game.STATE.GAME) {
+            if (State == STATE.GAME) {
                 if (System.currentTimeMillis() - test > 350) {
 
                     for (Mob mob : mobs ) {
@@ -162,7 +195,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
                 }
                 timer.start();
             }
-            else if (State == Game.STATE.MENU) {
+            else if (State == STATE.MENU) {
                 try {
                     renderMenu();
                 } catch (IOException e) {
@@ -190,16 +223,16 @@ public class Game extends JFrame implements Runnable, ActionListener {
     }
 
 
-    public void renderSpriteProjection(){
+    public void renderSpriteProjection() {
 
         // Very similar to wall projection, with the added check of the sprite being visible or not to the player
         // Where the visible sprites are then added to the visibleSprites ArrayList, then cleared when the method is called again
         // In order to clear the screen
 
         visibleSprites.clear();
-        for(Sprite sprite : sprites) {
+        for (Sprite sprite : sprites) {
             sprite.visibleSprite(player);
-            if (sprite.visible) {
+            if (sprite.visible && !sprite.isRemoved) {
                 visibleSprites.add(sprite);
             }
         }
@@ -213,7 +246,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
         }
 
 
-        if(visibleSprites.size() > 0) {
+        if (visibleSprites.size() > 0) {
             for (int i = 0; i < visibleSprites.size(); i++) {
                 for (int j = i + 1; j < visibleSprites.size(); j++) {
                     if (visibleSprites.get(i).distance < visibleSprites.get(j).distance) {
@@ -225,56 +258,60 @@ public class Game extends JFrame implements Runnable, ActionListener {
             }
         }
 
-
-        for (Sprite visibleSprite : visibleSprites) {
-
-
-            double spriteAngle = Math.atan2(visibleSprite.yPosition - player.y,
-                    visibleSprite.xPosition - player.x) - player.rotationAngle;
-
-            double correctWallDistance = visibleSprite.distance * Math.cos(visibleSprite.angle);
-
-            double spriteHeight = (TILE_SIZE / correctWallDistance) * playerDistance;
-            double spriteWidth = spriteHeight;
-
-            double spriteTopY = (WINDOW_HEIGHT / 2) - (spriteHeight / 2);
-            spriteTopY = (spriteTopY < 0) ? 0 : spriteTopY;
-            double spriteBottomY = (WINDOW_HEIGHT / 2) + (spriteHeight / 2);
-            spriteBottomY = (spriteTopY > WINDOW_HEIGHT) ? WINDOW_HEIGHT : spriteBottomY;
-
-            double spriteScreenPosX = Math.tan(spriteAngle) * playerDistance;
-
-            double spriteLeftX = (WINDOW_WIDTH / 2) + spriteScreenPosX - (spriteWidth / 2);
-            double spriteRightX = spriteLeftX + spriteWidth;
-
-            int TexspriteWidth = visibleSprite.SIZE;
-            int TexspriteHeight = visibleSprite.SIZE;
+        if (visibleSprites.size() > 0){
+            for (Sprite visibleSprite : visibleSprites) {
 
 
-            for (int x = (int) spriteLeftX; x < spriteRightX; x++) {
+                double correctWallDistance = visibleSprite.distance * Math.cos(visibleSprite.angle);
 
-                double texelWidth = (TexspriteWidth / spriteWidth);
-                int offSetX = (int) ((x - spriteLeftX) * texelWidth);
+                double spriteHeight = (TILE_SIZE / correctWallDistance) * playerDistance;
+                double spriteWidth = spriteHeight;
 
-                for (int y = (int) spriteTopY; y < spriteBottomY; y++) {
-                    if (x > 0 && x < WINDOW_WIDTH && y > 0 && y < WINDOW_HEIGHT) {
-                        int distanceFromTop = (int) (y + (spriteHeight / 2) - (WINDOW_WIDTH / 2));
-                        int offSetY = (int) (distanceFromTop * ((float) TexspriteHeight / spriteHeight));
+                double spriteTopY = (WINDOW_HEIGHT / 2) - (spriteHeight / 2);
+                spriteTopY = (spriteTopY < 0) ? 0 : spriteTopY;
 
-                        int texelColor = visibleSprite.pixels[((TexspriteWidth * offSetY) + offSetX)];
+                double spriteBottomY = (WINDOW_HEIGHT / 2) + (spriteHeight / 2);
+                spriteBottomY = (spriteBottomY > WINDOW_HEIGHT) ? WINDOW_HEIGHT : spriteBottomY;
+
+                double spriteAngle = Math.atan2(visibleSprite.yPosition - player.y,
+                        visibleSprite.xPosition - player.x) - player.rotationAngle;
+
+                double spriteScreenPosX = Math.tan(spriteAngle) * playerDistance;
+
+                double spriteLeftX = (WINDOW_WIDTH / 2) + spriteScreenPosX - (spriteWidth / 2);
+                double spriteRightX = spriteLeftX + spriteWidth;
+
+                int TexspriteWidth = visibleSprite.SIZE;
+                int TexspriteHeight = visibleSprite.SIZE;
 
 
-                        if ((texelColor != guardColor.getRGB() && texelColor != Color.MAGENTA.getRGB()) && visibleSprite.distance < rays.get(x).distance) {
-                            pixels[x + (y * WINDOW_WIDTH)] = texelColor;
+                for (int x = (int) spriteLeftX; x < spriteRightX; x++) {
+
+                    double texelWidth = (TexspriteWidth / spriteWidth);
+                    int offSetX = (int) ((x - spriteLeftX) * texelWidth);
+
+                    offSetX = offSetX < 0 ? 1: offSetX;
+
+                    for (int y = (int) spriteTopY; y < spriteBottomY; y++) {
+                        if (x > 0 && x < WINDOW_WIDTH && y > 0 && y < WINDOW_HEIGHT) {
+                            int distanceFromTop = (int) (y + (spriteHeight / 2) - (WINDOW_HEIGHT / 2));
+                            int offSetY = (int) (distanceFromTop * ((float) TexspriteHeight / spriteHeight));
+
+                            int texelColor = visibleSprite.pixels[((TexspriteWidth * offSetY) + offSetX)];
+
+
+                            if ((  texelColor != guardColor.getRGB() && texelColor != Color.MAGENTA.getRGB())  && visibleSprite.distance < rays.get(x).distance) {
+                                pixels[x + (y * WINDOW_WIDTH)] = texelColor;
+
+                            }
+
 
                         }
-
-
                     }
                 }
-            }
 
-        }
+            }
+    }
 
 
 
@@ -312,7 +349,13 @@ public class Game extends JFrame implements Runnable, ActionListener {
                             textNum = vertWallTex;
                             break;
                         case 68:
-                            textNum = 0;
+                            textNum = 2;
+                            break;
+                        case 21:
+                            textNum = vertWallTex;
+                            break;
+                        case 99:
+                            textNum = 9;
                             break;
                     }
                 }
@@ -324,6 +367,12 @@ public class Game extends JFrame implements Runnable, ActionListener {
                             textNum = 2;
                             break;
                         case 68:
+                            textNum = horzWallTex;
+                            break;
+                        case 21:
+                            textNum = 1;
+                            break;
+                        case 99:
                             textNum = horzWallTex;
                             break;
                     }
@@ -388,7 +437,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
         Graphics2D g2d = (Graphics2D) g;
 
         Rectangle playButton = new Rectangle(Game.WIDTH / 2 + 400, 350, 100, 50);
-  		Rectangle quitButton = new Rectangle(Game.WIDTH / 2 + 400, 450, 100, 50);
+        Rectangle quitButton = new Rectangle(Game.WIDTH / 2 + 400, 450, 100, 50);
 
         try {
             image = loader.loadImage("res/space.jpg");
@@ -414,6 +463,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
         g.dispose();
         bs.show();
     }
+
 
 
 
@@ -468,15 +518,15 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
 
 //        //RAYS
-        g.setColor(Color.CYAN);
-        for(int i = 0; i < rays.size(); i++){
-            g.drawLine((int) (Math.ceil(MINIMAP_SCALE_FACTOR * player.x)),
-                    (int) (Math.ceil(MINIMAP_SCALE_FACTOR * player.y)),
-                    (int) (Math.ceil(MINIMAP_SCALE_FACTOR * rays.get(i).wallHitX)),
-                    (int) (Math.ceil(MINIMAP_SCALE_FACTOR * rays.get(i).wallHitY))
-            );
-            //g.draw(new Line2D.Double(player.x, player.y, f.get(i).wallHitX, f.get(i).wallHitY));
-        }
+//        g.setColor(Color.CYAN);
+//        for(int i = 0; i < rays.size(); i++){
+//            g.drawLine((int) (Math.ceil(MINIMAP_SCALE_FACTOR * player.x)),
+//                    (int) (Math.ceil(MINIMAP_SCALE_FACTOR * player.y)),
+//                    (int) (Math.ceil(MINIMAP_SCALE_FACTOR * rays.get(i).wallHitX)),
+//                    (int) (Math.ceil(MINIMAP_SCALE_FACTOR * rays.get(i).wallHitY))
+//            );
+//            //g.draw(new Line2D.Double(player.x, player.y, f.get(i).wallHitX, f.get(i).wallHitY));
+//        }
         //PLAYER ICON
 //          g.setColor(Color.BLACK);
 //        g.fillOval((int) (Math.ceil(MINIMAP_SCALE_FACTOR * player.x-5)),
@@ -484,22 +534,24 @@ public class Game extends JFrame implements Runnable, ActionListener {
 //                (int) (Math.ceil(MINIMAP_SCALE_FACTOR * 10)),
 //                (int) (Math.ceil(MINIMAP_SCALE_FACTOR * 10))
 //        );
-////       // DIRECTION LINE
-//        g.setColor(Color.blue);
-//        g.drawLine( (int) (Math.ceil(MINIMAP_SCALE_FACTOR * player.x)),
-//                    (int) (Math.ceil(MINIMAP_SCALE_FACTOR * player.y)),
-//                    (int) (Math.ceil(MINIMAP_SCALE_FACTOR * player.vectorX())),
-//                    (int) (Math.ceil(MINIMAP_SCALE_FACTOR * player.vectorY()))
-//        );
-//
-//         // Attack vector
-        Ray test = new Ray (player.rotationAngle);
-        test.cast(player.x, player.y);
-        g.setColor(Color.GREEN);
-        g.draw(new Line2D.Double(MINIMAP_SCALE_FACTOR * player.x,
-                MINIMAP_SCALE_FACTOR * player.y,
-                MINIMAP_SCALE_FACTOR * test.wallHitX,
-                MINIMAP_SCALE_FACTOR * test.wallHitY));
+//       // DIRECTION LINE
+        g.setColor(Color.blue);
+        g.drawLine( (int) (Math.ceil(MINIMAP_SCALE_FACTOR * player.x)),
+                    (int) (Math.ceil(MINIMAP_SCALE_FACTOR * player.y)),
+                    (int) (Math.ceil(MINIMAP_SCALE_FACTOR * player.vectorX())),
+                    (int) (Math.ceil(MINIMAP_SCALE_FACTOR * player.vectorY()))
+        );
+
+         // Attack vector
+//        Ray test = new Ray (player.rotationAngle);
+//        test.cast(player.x, player.y);
+//        g.setColor(Color.GREEN);
+//        g.draw(new Line2D.Double(MINIMAP_SCALE_FACTOR * player.x,
+//                MINIMAP_SCALE_FACTOR * player.y,
+//                MINIMAP_SCALE_FACTOR * test.wallHitX,
+//                MINIMAP_SCALE_FACTOR * test.wallHitY));
+
+
 
 
         g.dispose();
@@ -524,12 +576,12 @@ public class Game extends JFrame implements Runnable, ActionListener {
     }
 
     public static boolean hasWallAt(double newX, double newY){
-        if(newX > WINDOW_WIDTH || newX < 0 || newY <0 || newY > WINDOW_HEIGHT){
+        if(newX >= MAP_NUM_COLS * TILE_SIZE || newX < 0 || newY <0 || newY >= MAP_NUM_ROWS * TILE_SIZE){
             return true;
         }
-        int wallX = (int) (newX/TILE_SIZE);
-        int wallY = (int) (newY/TILE_SIZE);
-        return map[wallY][wallX] != 0;
+        int wallX = (int)Math.floor(newX/TILE_SIZE);
+        int wallY = (int)Math.floor(newY/TILE_SIZE);
+        return (map[wallY][wallX] != 0 && map[wallY][wallX] != 77);
     }
 
     // for the mob, so it doesn't go through the sprite objects
@@ -538,12 +590,18 @@ public class Game extends JFrame implements Runnable, ActionListener {
 //    }
 
     public static int mapIndexAt (double x, double y){
-        if(x < 0 || x > WINDOW_WIDTH || y < 0 || y > WINDOW_HEIGHT){
+        if(x < 0 || x > MAP_NUM_COLS * TILE_SIZE || y < 0 || y >  MAP_NUM_ROWS * TILE_SIZE){
             return 0;
         }
-        int wallX = (int) (x/TILE_SIZE);
-        int wallY = (int) (y/TILE_SIZE);
+        int wallX = (int)Math.floor(x/TILE_SIZE);
+        int wallY = (int)Math.floor(y/TILE_SIZE);
         return map[wallY][wallX];
+    }
+    public static int getYMapIndex (double y){
+        return (int)(y/TILE_SIZE);
+    }
+    public static int getXMapIndex(double x){
+        return (int)(x/TILE_SIZE);
     }
 
     //Updating Player position 60 times per second (see timer delay)
@@ -551,9 +609,11 @@ public class Game extends JFrame implements Runnable, ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         renderingWalls(pixels,createAllRays());
+
         renderSpriteProjection();
+
         player.update(map);
-       // enemies();
+
 
         render();
 
