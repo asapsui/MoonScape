@@ -639,7 +639,12 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
 
       render();
-
+    
+    //TODO: this just freezes the game
+      if(player.hasWon){
+            stop();
+            timer.stop();
+        }
 
   }
 
