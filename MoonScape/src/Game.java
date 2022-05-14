@@ -388,8 +388,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
         Graphics2D g2d = (Graphics2D) g;
 
         Rectangle playButton = new Rectangle(Game.WIDTH / 2 + 400, 350, 100, 50);
-//   		Rectangle helpButton = new Rectangle(Game.WIDTH / 2 + 400, 450, 100, 50);
-        Rectangle quitButton = new Rectangle(Game.WIDTH / 2 + 400, 550, 100, 50);
+  		Rectangle quitButton = new Rectangle(Game.WIDTH / 2 + 400, 450, 100, 50);
 
         try {
             image = loader.loadImage("res/space.jpg");
