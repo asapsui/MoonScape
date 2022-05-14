@@ -1,4 +1,4 @@
-package main;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 // Mary Czelusniak
@@ -9,15 +9,43 @@ import java.util.ArrayList;
 // Not doing so makes the character unable to move way before it actually gets close to the sprite
 public class Sprite extends Texture{
 
-    public static Sprite pillar = new Sprite("res/objects/pillar.png", 64,400 ,500);
-    public static Sprite candlestand = new Sprite("res/objects/candlestand.png",64, 300, 500);
-    public static Sprite fountain = new Sprite("res/objects/fountain.png",64, 200, 450);
-    public static Sprite box = new Sprite("res/objects/box.png",64, 250, 450);
+    public static Sprite plantInPot = new Sprite ("res/objects/PlantInPot.bmp",64,90,730);
+    public static Sprite pillar = new Sprite("res/objects/pillar.png", 64,365 ,725);
+    public static Sprite pillar2 = new Sprite("res/objects/pillar.png", 64,365 ,880);
+
+    public static Sprite barrel = new Sprite ("res/objects/barrel.png",64,17*64+40,9*64+35);
+    public static Sprite barrel2 = new Sprite ("res/objects/barrel.png",64,16*64+15,8*64+36);
+
+    public static Sprite fancyBarrel = new Sprite ("res/objects/barrel2.png",127,18*64+36,10*64+36);
+    public static Sprite fancyBarrel2 = new Sprite ("res/objects/barrel2.png",127,19*64+36,7*64+36);
+
+    public static Sprite pot = new Sprite ("res/objects/pot.bmp",64,150,6*64+36);
+    public static Sprite box = new Sprite("res/objects/box.png",64, 647, 150);
+    public static Sprite blueLight = new Sprite("res/objects/blueLight.bmp",64, 775, 150);
+    public static Sprite blueLight2 = new Sprite("res/objects/blueLight.bmp",64, 896, 832);
+    public static Sprite blueLight3 = new Sprite("res/objects/blueLight.bmp",64, 1152, 832);
+    public static Sprite blueLight4 = new Sprite("res/objects/blueLight.bmp",64, 1400, 732);
+
+
+
+    public static Sprite bracelet = new Sprite ("res/objects/GoldBraclet.bmp",64,1500,296);
+
+
+    public static Sprite candlestand = new Sprite("res/objects/candlestand.png",64, 80, 80);
+    public static Sprite candlestand2 = new Sprite("res/objects/candlestand.png",64, 64*5+40, 80);
+
+
+    public static Sprite fountain = new Sprite("res/objects/fountain.png",64, 11*64, 8*64);
+    public static Sprite fountain2 = new Sprite("res/objects/fountain.png",64, 4*64, 8*64);
+
+
+
 
 
     double xPosition, yPosition, distance, angle;
 
     public boolean visible;
+    public boolean isRemoved = false;
 
     public Sprite(String location, int size, double x, double y) {
         super(location, size);
@@ -45,6 +73,8 @@ public class Sprite extends Texture{
                 this.visible = false;
             }
     }
-
+    public void Remove(){
+        this.isRemoved = true;
+    }
 
 }
