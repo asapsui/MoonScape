@@ -1,9 +1,7 @@
 /* Sam Imose
  * The mobs can currently shoot through walls, but I just need to implement the hasWallAt method.
- * The mobs aren't the best at finding the player, once it hits a wall. (Need to fix the math)
- * 
+ * The mobs aren't the best at finding the player, once it hits a wall. (Need to fix the math) 
  */
-
 import java.util.Hashtable;
 
 public class Mob extends Sprite {
@@ -69,6 +67,7 @@ public class Mob extends Sprite {
 		this.health = 4;
 		this.maxHealth = 4;
 		this.guardMovement = animation;
+		this.removed = false;
 		
 	}
 		

@@ -1,11 +1,20 @@
-
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.util.Hashtable;
+
+import javax.sound.sampled.*;
+
 
 public class Player  
 implements KeyListener {
+	
+	enum WeaponHandling {
+		Hold, Fire
+	}
+	
 	
 	double x;
     double y;
@@ -18,9 +27,11 @@ implements KeyListener {
     public int health;
     public int maxHealth;
     public static Texture currentHealthImage;
+    public static Texture currentWeaponImage;
     boolean hasKey = false;
     
-	public static Hashtable<Integer, Texture> HealthTable = new Hashtable<>(){{
+    
+    public static Hashtable<Integer, Texture> HealthTable = new Hashtable<>(){{
 		put(8, new Texture("res/healthbar/8.png", 300));
         //put(15, new Texture("res/healthbar/8.png", 300));
         put(7, new Texture("res/healthbar/7.png", 300));
@@ -39,24 +50,32 @@ implements KeyListener {
 		//put(1, new Texture("res/healthbar/1.png", 300));
         put(0, new Texture("res/healthbar/0.png", 300));
 	}};
- 
-    public Player(){
-        this.x = 80;
-        this.y = 880;
+	
+	public static Hashtable<Player.WeaponHandling, Texture> Shotgun = new Hashtable<>()
+	{{
+		put(WeaponHandling.Hold, new Texture("res/weapons/shotgun2-noback.png", 64));
+		put(WeaponHandling.Fire, new Texture("res/weapons/shotgun1-noback.png", 64));
+	}};
 
-        this.turnDirection = 0; // -1 if left, +1 if right
-        this.walkDirection = 0; // -1 if back, +1 if front
-        this.rotationAngle = 270 * (Math.PI/180);
-        this.moveSpeed = 6;
-        this.rotationSpeed = 3.5 * (Math.PI / 180);
-        // loads in with max health
-        this.health = 24;
-        this.maxHealth = 24;
-        currentHealthImage = HealthTable.get(maxHealth/3);
+    public Player(){
+    	 this.x = 80;
+         this.y = 880;
+
+         this.turnDirection = 0; // -1 if left, +1 if right
+         this.walkDirection = 0; // -1 if back, +1 if front
+         this.rotationAngle = 270 * (Math.PI/180);
+         this.moveSpeed = 6;
+         this.rotationSpeed = 3.5 * (Math.PI / 180);
+         // loads in with max health
+         this.health = 24;
+         this.maxHealth = 24;
+         currentHealthImage = HealthTable.get(maxHealth/3);
+         currentWeaponImage = Shotgun.get(WeaponHandling.Hold);
     }
+    
     public void update(int[][]map){
-        this.rotationAngle += this.turnDirection * this.rotationSpeed;
-	this.rotationAngle = Ray.normalizeAngle(rotationAngle);
+    	this.rotationAngle += this.turnDirection * this.rotationSpeed;
+        this.rotationAngle = Ray.normalizeAngle(rotationAngle);
         var moveStep = this.walkDirection * this.moveSpeed;
         var newPlayerX = this.x + Math.cos(this.rotationAngle) * moveStep;
         var newPlayerY = this.y + Math.sin(this.rotationAngle) * moveStep;
@@ -67,7 +86,7 @@ implements KeyListener {
 
         }
         
-        
+       
         // since we are updating the players position 60 times per second
         if (health != 0 && maxHealth != 0) {
 	        if (health == maxHealth - 3) {
@@ -85,6 +104,7 @@ implements KeyListener {
             Sprite.bracelet.Remove();
         }
 
+        
     }
 
     public double getX(){
@@ -103,6 +123,10 @@ implements KeyListener {
     
     public void drawHealthbar(Graphics g) {
         g.drawImage(currentHealthImage.getImage(), 10, 800, null);
+    }
+    
+    public void drawWeapon(Graphics g) {
+    	g.drawImage(currentWeaponImage.getImage().getScaledInstance(700, 700, Image.SCALE_DEFAULT), 200, 300, null);
     }
 
     @Override
@@ -124,8 +148,7 @@ implements KeyListener {
         if(e.getKeyChar() == 'a' || e.getKeyCode() == KeyEvent.VK_LEFT){
             this.turnDirection = -1;
         }
-
-
+        
         if(e.getKeyChar() == 'e' || e.getKeyChar() == 'E'){
             if(Game.mapIndexAt(this.vectorX(),this.vectorY() )==7  ){
                 Game.map[Game.getYMapIndex(this.vectorY())][Game.getXMapIndex(this.vectorX())] = 77;
@@ -136,6 +159,14 @@ implements KeyListener {
             if(Game.mapIndexAt(this.vectorX(),this.vectorY() )== 16 && this.hasKey ){
                 Game.map[Game.getYMapIndex(this.vectorY())][Game.getXMapIndex(this.vectorX())] = 0;
             }
+        }
+        if (e.getKeyChar() == KeyEvent.VK_SPACE) {
+        	try {
+        		playGunSound();
+        	} catch (Exception e1) {
+        		System.out.println(e1.toString());
+        	}
+        	currentWeaponImage = Shotgun.get(WeaponHandling.Fire);
         }
     }
 
@@ -153,5 +184,43 @@ implements KeyListener {
         if(e.getKeyChar() == 'a' || e.getKeyCode() == KeyEvent.VK_LEFT){
             this.turnDirection = 0;
         }
+        if (e.getKeyChar() == KeyEvent.VK_SPACE) {
+        	currentWeaponImage = Shotgun.get(WeaponHandling.Hold);
+        }
     }
+    
+    public boolean checkAttackRange(Mob mob) {
+    	if (currentWeaponImage == Shotgun.get(WeaponHandling.Fire)) {
+    		double diffX = mob.xPosition - x;
+    		double diffY = mob.yPosition - y;
+    		if (Math.abs(diffY) <= 200 && Math.abs(diffX) <= 200) {
+    			try {
+            		playDamageSound();
+            	} catch (Exception e1) {
+            		System.out.println(e1.toString());
+            	}    			
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    static void playGunSound() throws Exception {
+    	File file = new File("res/audio/shotgunsound.wav");
+    	AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+    	Clip clip = AudioSystem.getClip();
+    	clip.open(audioStream);
+    	clip.start();
+
+    }
+    
+    static void playDamageSound() throws Exception {
+    	File file = new File("res/audio/mobdamagesound.wav");
+    	AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+    	Clip clip = AudioSystem.getClip();
+    	clip.open(audioStream);
+    	clip.start();
+
+    }
+ 
 }
