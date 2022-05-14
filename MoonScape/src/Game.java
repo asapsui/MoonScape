@@ -1,3 +1,4 @@
+package main;
 //Mary Czelusniak
 //Ray Casting Engine
 import javax.sound.sampled.Line;
@@ -66,7 +67,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
   public Color guardColor = new Color(152,0,136,255);
 
   public enum STATE {
-      MENU, GAME;
+      MENU, GAME, WON, LOST;
   };
 
   public static STATE State = STATE.MENU;
@@ -152,7 +153,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
       visibleSprites = new ArrayList<>();
 
       this.addMouseListener(new MouseInput());
-
+      this.addKeyListener(new KeyInput());
 
       setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
       setResizable(false);
@@ -214,6 +215,12 @@ public class Game extends JFrame implements Runnable, ActionListener {
               } catch (IOException e) {
                   e.printStackTrace();
               }
+          }
+          else if (State == STATE.WON) {
+        	  winScreen();
+          }
+          else if (State == State.LOST) {
+        	  loseScreen();
           }
 
       }
@@ -458,24 +465,20 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
       Graphics2D g2d = (Graphics2D) g;
 
-      Rectangle playButton = new Rectangle(Game.WIDTH / 2 + 400, 350, 100, 50);
-      Rectangle quitButton = new Rectangle(Game.WIDTH / 2 + 400, 450, 100, 50);
+      Rectangle playButton = new Rectangle(Game.WIDTH / 2 + 575, 450, 100, 50);
+      Rectangle quitButton = new Rectangle(Game.WIDTH / 2 + 575, 550, 100, 50);
 
       try {
-          image = loader.loadImage("res/space.jpg");
+          image = loader.loadImage("res/MoonScapeMenu.png");
       } catch (IOException e) {
           e.printStackTrace();
       }
 
       g.drawImage(image, 0, 0, Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT, null);
 
-      Font fnt0 = new Font("arial", Font.BOLD, 75);
-      g.setFont(fnt0);
-      g.setColor(Color.white);
-      g.drawString("MOON SCAPE", Game.WIDTH / 2 + 200, 250);
-
       Font fnt1 = new Font("arial", Font.BOLD, 30);
       g.setFont(fnt1);
+      g.setColor(Color.white);
       g.drawString("Play", playButton.x + 19, playButton.y + 30);
       g2d.draw(playButton);
 
@@ -487,7 +490,69 @@ public class Game extends JFrame implements Runnable, ActionListener {
   }
 
 
+  public void winScreen() {
+   	 bs = getBufferStrategy();
+       if (bs == null){
+           createBufferStrategy(2);
+           return;
+       }
+       Graphics2D g = (Graphics2D) bs.getDrawGraphics();
+   	
+   	BufferedImage image = new BufferedImage(Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
+   	BufferedImageLoader loader = new BufferedImageLoader();
+   	
+   	try {
+   		image = loader.loadImage("res/space.jpg");
+   	} catch (IOException e) {
+   		e.printStackTrace();
+   	}
+   	
+   	g.drawImage(image, 0, 0, Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT, null);		
+   	
+   	Font fnt0 = new Font("arial", Font.BOLD, 75);
+   	g.setFont(fnt0);
+   	g.setColor(Color.white);
+   	g.drawString("YOU WIN!", Game.WIDTH / 2 + 450, 250);
+   	
+   	Font fnt1 = new Font("arial", Font.BOLD, 30);
+   	g.setFont(fnt1);
+   	g.drawString("Press ESC", 550, 550);
 
+   	g.dispose();
+   	bs.show();
+   }
+  
+  public void loseScreen() {
+	   	 bs = getBufferStrategy();
+	       if (bs == null){
+	           createBufferStrategy(2);
+	           return;
+	       }
+	       Graphics2D g = (Graphics2D) bs.getDrawGraphics();
+	   	
+	   	BufferedImage image = new BufferedImage(Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT, BufferedImage.TYPE_INT_RGB);
+	   	BufferedImageLoader loader = new BufferedImageLoader();
+	   	
+	   	try {
+	   		image = loader.loadImage("res/space.jpg");
+	   	} catch (IOException e) {
+	   		e.printStackTrace();
+	   	}
+	   	
+	   	g.drawImage(image, 0, 0, Game.WINDOW_WIDTH, Game.WINDOW_HEIGHT, null);		
+	   	
+	   	Font fnt0 = new Font("arial", Font.BOLD, 75);
+	   	g.setFont(fnt0);
+	   	g.setColor(Color.white);
+	   	g.drawString("GAME OVER", Game.WIDTH / 2 + 400, 250);
+	   	
+	   	Font fnt1 = new Font("arial", Font.BOLD, 30);
+	   	g.setFont(fnt1);
+		g.drawString("Press ESC", 550, 550);
+
+	   	g.dispose();
+	   	bs.show();
+	   }
 
   private void render() {
       bs = getBufferStrategy();
@@ -631,21 +696,28 @@ public class Game extends JFrame implements Runnable, ActionListener {
   @Override
   public void actionPerformed(ActionEvent e) {
 
-      renderingWalls(pixels,createAllRays());
+      if (State == State.GAME) {
+      	renderingWalls(pixels,createAllRays());
+          renderSpriteProjection();
+          player.update(map);
+         // enemies();
 
-      renderSpriteProjection();
-
-      player.update(map);
-
-
-      render();
-    
-    //TODO: this just freezes the game
-      if(player.hasWon){
-            stop();
-            timer.stop();
-        }
-
+          render();
+      }
+      else if (State == State.MENU) {
+      	try {
+  			renderMenu();
+  		} catch (IOException e1) {
+  			// TODO Auto-generated catch block
+  			e1.printStackTrace();
+  		}
+      }
+      else if (State == State.WON) {
+    	  winScreen();
+      }
+      else if (State == State.LOST) {
+    	  loseScreen();
+      }
   }
 
   // No one cares about main =D
