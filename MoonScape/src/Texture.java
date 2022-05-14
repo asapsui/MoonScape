@@ -44,10 +44,25 @@ public class Texture {
     	return image;
     }
        
-    public static Texture wood = new Texture("res/wood.png", 64);
-    public static Texture brick = new Texture("res/redbrick.png", 64);
+    public static Texture blueBall = new Texture("res/blueBall.bmp", 64);
+    public static Texture greyPanel2 = new Texture("res/greyPanel.bmp", 64);
+
+    public static Texture spaceShip = new Texture("res/spaceShip.bmp", 64);
+    public static Texture spaceShip1 = new Texture("res/spaceShip1.bmp", 64);
+    public static Texture spaceShip2 = new Texture ("res/spaceShip2.bmp",64);
+
+
+    public static Texture bigSpaceShip = new Texture ("res/bigSpaceShip.bmp",64);
+    public static Texture bigSpaceShip1 = new Texture ("res/2132.bmp",64);
+    public static Texture bigSpaceShip2 = new Texture ("res/2133.bmp",64);
+    public static Texture bigSpaceShip3 = new Texture ("res/2135.bmp",64);
+    public static Texture bigSpaceShip4 = new Texture ("res/2136.bmp",64);
+
+    public static Texture escape = new Texture ("res/escape.bmp",64);
+    public static Texture escapeDoor = new Texture ("res/escapeDoor.bmp",64);
+
+
     public static Texture bluestone = new Texture("res/bluestone.png", 64);
-    public static Texture stone = new Texture("res/greystone.png", 64);
     public static Texture moon = new Texture("res/moon.png", 64);
     public static Texture door = new Texture("res/door.png", 64);
     public static Texture doorWall = new Texture("res/doorWall.png", 64);
