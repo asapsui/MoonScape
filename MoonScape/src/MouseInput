@@ -1,6 +1,4 @@
 package main;
-
-import main.Game;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -18,15 +16,16 @@ public class MouseInput implements MouseListener {
 		int mx = e.getX();
 		int my = e.getY();
 		
-		if (mx >= 400 && mx <= 500) {
-			if (my >= 350 && my <= 400) {
-				Game.State = Game.State.GAME;
-			}
-			else if (my >= 450 && my <= 500) {
-				System.exit(0);
+		if (Game.State == Game.State.MENU) {
+			if (mx >= 575 && mx <= 675) {
+				if (my >= 450 && my <= 500) {
+					Game.State = Game.State.GAME;
+				}
+				else if (my >= 550 && my <= 600) {
+					System.exit(0);
+				}
 			}
 		}
-		
 	}
 
 	@Override
