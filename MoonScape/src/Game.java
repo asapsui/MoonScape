@@ -118,7 +118,6 @@ public class Game extends JFrame implements Runnable, ActionListener {
         visibleSprites = new ArrayList<>();
 
         this.addMouseListener(new MouseInput());
-        this.addKeyListener(new  KeyInput());
 
         setSize(WINDOW_WIDTH,WINDOW_HEIGHT);
         setResizable(false);
@@ -409,8 +408,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
         g.setFont(fnt1);
         g.drawString("Play", playButton.x + 19, playButton.y + 30);
         g2d.draw(playButton);
-//   		g.drawString("Help", helpButton.x + 19, helpButton.y + 30);
-//   		g2d.draw(helpButton);
+
         g.drawString("Quit", quitButton.x + 19, quitButton.y + 30);
         g2d.draw(quitButton);
 
