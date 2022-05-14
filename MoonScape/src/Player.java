@@ -29,6 +29,7 @@ implements KeyListener {
     public static Texture currentHealthImage;
     public static Texture currentWeaponImage;
     boolean hasKey = false;
+    boolean hasWon = false;
     
     
     public static Hashtable<Integer, Texture> HealthTable = new Hashtable<>(){{
@@ -103,8 +104,13 @@ implements KeyListener {
             this.hasKey = true;
             Sprite.bracelet.Remove();
         }
-
+	this.hasWon = checkIfWin();
         
+    }
+    private boolean checkIfWin() {
+        double checkXWin = Math.abs(this.x - 1508);
+        double checkYWin = Math.abs(this.y - 90);
+        return (checkXWin <= 50 && checkYWin <= 50);
     }
 
     public double getX(){
