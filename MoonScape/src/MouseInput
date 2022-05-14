@@ -22,7 +22,7 @@ public class MouseInput implements MouseListener {
 			if (my >= 350 && my <= 400) {
 				Game.State = Game.State.GAME;
 			}
-			else if (my >= 550 && my <= 600) {
+			else if (my >= 450 && my <= 500) {
 				System.exit(0);
 			}
 		}
