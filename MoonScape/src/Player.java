@@ -1,3 +1,4 @@
+package main;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
@@ -29,8 +30,6 @@ implements KeyListener {
     public static Texture currentHealthImage;
     public static Texture currentWeaponImage;
     boolean hasKey = false;
-    boolean hasWon = false;
-    
     
     public static Hashtable<Integer, Texture> HealthTable = new Hashtable<>(){{
 		put(8, new Texture("res/healthbar/8.png", 300));
@@ -104,13 +103,21 @@ implements KeyListener {
             this.hasKey = true;
             Sprite.bracelet.Remove();
         }
-	this.hasWon = checkIfWin();
-        
+        checkIfWin();
+        checkIfLost();
     }
-    private boolean checkIfWin() {
+    private void checkIfWin() {
         double checkXWin = Math.abs(this.x - 1508);
         double checkYWin = Math.abs(this.y - 90);
-        return (checkXWin <= 50 && checkYWin <= 50);
+        if (checkXWin <= 50 && checkYWin <= 50) {
+        	Game.State = Game.State.WON;
+        }
+    }
+    
+    private void checkIfLost() {
+        if (health == 0) {
+        	Game.State = Game.State.LOST;
+        }
     }
 
     public double getX(){
@@ -166,13 +173,15 @@ implements KeyListener {
                 Game.map[Game.getYMapIndex(this.vectorY())][Game.getXMapIndex(this.vectorX())] = 0;
             }
         }
-        if (e.getKeyChar() == KeyEvent.VK_SPACE) {
-        	try {
-        		playGunSound();
-        	} catch (Exception e1) {
-        		System.out.println(e1.toString());
-        	}
-        	currentWeaponImage = Shotgun.get(WeaponHandling.Fire);
+        if (Game.State == Game.State.GAME) {
+        	if (e.getKeyChar() == KeyEvent.VK_SPACE) {
+            	try {
+            		playGunSound();
+            	} catch (Exception e1) {
+            		System.out.println(e1.toString());
+            	}
+            	currentWeaponImage = Shotgun.get(WeaponHandling.Fire);
+            }
         }
     }
 
