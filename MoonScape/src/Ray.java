@@ -64,8 +64,8 @@ public class Ray {
         double nextHorzTouchX = xintercept;
         double nextHorzTouchY = yintercept;
 
-        while(nextHorzTouchX >= 0 && nextHorzTouchX <= Game.WINDOW_WIDTH &&
-                nextHorzTouchY >=0 && nextHorzTouchY <= Game.WINDOW_HEIGHT){
+        while(nextHorzTouchX >= 0 && nextHorzTouchX <= Game.MAP_NUM_COLS * Game.TILE_SIZE &&
+                nextHorzTouchY >=0 && nextHorzTouchY <= Game.MAP_NUM_ROWS * Game.TILE_SIZE){
 
             int wallGridContent = Game.mapIndexAt(nextHorzTouchX, (nextHorzTouchY - (this.isRayFacingUp ? 1 : 0)));
 
@@ -75,9 +75,9 @@ public class Ray {
                 horzWallHitX = nextHorzTouchX;
                 horzWallHitY = nextHorzTouchY;
 
-                if(wallGridContent != 0){
+                if(wallGridContent != 0  && wallGridContent != 77){
                     horzWallColor = wallGridContent;
-                    if(horzWallColor == 7){
+                    if(horzWallColor == 7 || horzWallColor == 16){
                         horzWallHitX = nextHorzTouchX + (xstep/2);
                         horzWallHitY = nextHorzTouchY + (ystep/2);
                     }
@@ -118,8 +118,8 @@ public class Ray {
         double nextVertTouchX = xintercept;
         double nextVertTouchY = yintercept;
 
-        while(nextVertTouchX >= 0 && nextVertTouchX <= Game.WINDOW_WIDTH &&
-                nextVertTouchY >= 0 && nextVertTouchY <= Game.WINDOW_HEIGHT){
+        while(nextVertTouchX >= 0 && nextVertTouchX <= Game.MAP_NUM_COLS * Game.TILE_SIZE &&
+                nextVertTouchY >= 0 && nextVertTouchY <= Game.MAP_NUM_ROWS * Game.TILE_SIZE){
 
             int wallGridContent = Game.mapIndexAt((nextVertTouchX - (this.isRayFacingLeft ? 1 : 0)),
                     nextVertTouchY);
@@ -131,12 +131,11 @@ public class Ray {
                 vertWallHitX = nextVertTouchX;
                 vertWallHitY = nextVertTouchY;
 
-                if(wallGridContent != 0){
+                if(wallGridContent != 0 && wallGridContent != 77 ){
                     vertWallColor = wallGridContent;
-                    if(vertWallColor == 7){
+                    if(vertWallColor == 7 || vertWallColor == 16){
                        vertWallHitX = nextVertTouchX + (xstep/2);
                        vertWallHitY = nextVertTouchY + (ystep/2);
-
 
                     }
                 }
