@@ -4,10 +4,7 @@
  * 
  */
 
-import java.awt.Graphics;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Timer;
 
 public class Mob extends Sprite {
 
@@ -18,14 +15,26 @@ public class Mob extends Sprite {
 		Walk_1, Walk_2, Walk_3, Walk_4,
 		Shoot_1, Shoot_2
 	}
-		
-	public static Hashtable<Movement, Texture> guardMovement = new Hashtable<>(){{
+	public static Hashtable<Movement, Texture> guardMovement = new Hashtable<>();
+
+	public static Hashtable<Movement, Texture> guardMovement1 = new Hashtable<>(){{
 		put(Movement.Standing, new Texture("res/guard/mguard_s_1.bmp", 64));
 		put(Movement.Walk_1, new Texture("res/guard/mguard_w1_1.bmp", 64));
 		put(Movement.Walk_2, new Texture("res/guard/mguard_w2_1.bmp", 64));
 		put(Movement.Walk_3, new Texture("res/guard/mguard_w3_1.bmp", 64));
 		put(Movement.Walk_4, new Texture("res/guard/mguard_w4_1.bmp", 64));
 		put(Movement.Shoot_1, new Texture("res/guard/mguard_shoot2.bmp", 64));
+		put(Movement.Shoot_2, new Texture("res/guard/mguard_shoot3.bmp", 64));
+	}};
+
+
+	public static Hashtable<Movement, Texture> guardMovement2 = new Hashtable<>(){{
+		put(Movement.Standing, new Texture("res/guard/mguard_s_1.bmp", 64));
+		put(Movement.Walk_1, new Texture("res/objects/pot.bmp", 64));
+		put(Movement.Walk_2, new Texture("res/guard/mguard_w2_1.bmp", 64));
+		put(Movement.Walk_3, new Texture("res/guard/mguard_w3_1.bmp", 64));
+		put(Movement.Walk_4, new Texture("res/guard/mguard_w4_1.bmp", 64));
+		put(Movement.Shoot_1, new Texture("res/objects/pot.bmp", 64));
 		put(Movement.Shoot_2, new Texture("res/guard/mguard_shoot3.bmp", 64));
 	}};
 	
@@ -38,12 +47,14 @@ public class Mob extends Sprite {
 	int beginWalking = 1;
 	
 	// every shot we decrease the enemies speed by like .10
-    public static Mob guard1 = new Mob(guardMovement.get(Movement.Standing).location, 64, 200, 100, 3);
-    public static Mob guard2 = new Mob(guardMovement.get(Movement.Standing).location, 64, 300, 400, 0.30);
+    public static Mob guard1 = new Mob(guardMovement1.get(Movement.Standing).location, 64, 110, 128, 6, guardMovement1);
+   // public static Mob guard2 = new Mob(guardMovement.get(Movement.Standing).location, 64, 300, 400, 0.30);
+
+
 
 
 	public final int textureOffset = 10;
-	public final int SHOOT_RANGE = 150;
+	public int SHOOT_RANGE = 200;
 
     // this'll be used for when the player has killed a mob
 		// 	we will remove it from the arraylist and stop rendering it
@@ -51,12 +62,13 @@ public class Mob extends Sprite {
 
 	double startingPosX, startingPosY;
 	// all mobs will start out with the standing image
-	public Mob(String location, int size, double x, double y, double speed) {
+	public Mob(String location, int size, double x, double y, double speed, Hashtable<Movement, Texture> animation) {
 		super(location, size, x, y);
 		this.speed = speed;
 		this.constantSpeed = speed;
 		this.health = 4;
 		this.maxHealth = 4;
+		this.guardMovement = animation;
 		
 	}
 		
@@ -80,7 +92,7 @@ public class Mob extends Sprite {
 			// should be != 0
 			if (player.health != 0) {
 				// update the players health bar
-				player.health -= 1;
+				player.health -= 0.5;
 				//player.drawHealthbar(g);
 				System.out.println(player.health);
 			}
@@ -129,6 +141,9 @@ public class Mob extends Sprite {
 	// they are shooting guns, so the range can be further away
 	public boolean checkAttackRange(double distFromPlayerY, double distFromPlayerX) {
 		return Math.abs(distFromPlayerY) <= SHOOT_RANGE && Math.abs(distFromPlayerX) <= SHOOT_RANGE;
+	}
+	public void setRange (int range){
+		this.SHOOT_RANGE = range;
 	}
 	
 	public void chooseWalk() {
