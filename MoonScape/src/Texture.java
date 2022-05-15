@@ -1,9 +1,10 @@
+package main;
+
 import javax.imageio.ImageIO;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Hashtable;
 
 public class Texture {
 	
@@ -21,10 +22,10 @@ public class Texture {
     }
     private void load(){
         try{
-            image = ImageIO.read(new File(location));
-            int w = image.getWidth();
-            int h = image.getHeight();
-            image.getRGB(0,0,w,h,pixels,0,w);
+            this.image = ImageIO.read(new File(location));
+            int w = this.image.getWidth();
+            int h = this.image.getHeight();
+            this.image.getRGB(0,0,w,h,pixels,0,w);
 //            for(int i = 0; i < pixels.length; i++){
 //                System.out.println(pixels[i]);
 //            }
@@ -39,6 +40,7 @@ public class Texture {
     	// reload the updated image
     	load();  
     }
+
     
     public Image getImage() {
     	return image;
