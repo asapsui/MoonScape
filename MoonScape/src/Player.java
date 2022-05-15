@@ -1,8 +1,11 @@
 package main;
+
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.util.Hashtable;
 
@@ -30,6 +33,8 @@ implements KeyListener {
     public static Texture currentHealthImage;
     public static Texture currentWeaponImage;
     boolean hasKey = false;
+    boolean attacking = false;
+    
     
     public static Hashtable<Integer, Texture> HealthTable = new Hashtable<>(){{
 		put(8, new Texture("res/healthbar/8.png", 300));
@@ -83,6 +88,7 @@ implements KeyListener {
         if (!Game.hasWallAt(newPlayerX, newPlayerY)) {
             this.x = newPlayerX;
             this.y = newPlayerY;
+           // System.out.println(this.x + " Y: " + this.y);
 
         }
         
@@ -139,7 +145,8 @@ implements KeyListener {
     }
     
     public void drawWeapon(Graphics g) {
-    	g.drawImage(currentWeaponImage.getImage().getScaledInstance(700, 700, Image.SCALE_DEFAULT), 200, 300, null);
+        //TODO: filter pink
+    	g.drawImage(currentWeaponImage.getImage().getScaledInstance(700, 700, Image.SCALE_DEFAULT), 400, 300, null);
     }
 
     @Override
@@ -173,15 +180,14 @@ implements KeyListener {
                 Game.map[Game.getYMapIndex(this.vectorY())][Game.getXMapIndex(this.vectorX())] = 0;
             }
         }
-        if (Game.State == Game.State.GAME) {
-        	if (e.getKeyChar() == KeyEvent.VK_SPACE) {
-            	try {
-            		playGunSound();
-            	} catch (Exception e1) {
-            		System.out.println(e1.toString());
-            	}
-            	currentWeaponImage = Shotgun.get(WeaponHandling.Fire);
-            }
+        if (e.getKeyChar() == KeyEvent.VK_SPACE) {
+        	try {
+        		//playGunSound();
+        	} catch (Exception e1) {
+        		System.out.println(e1.toString());
+        	}
+        	currentWeaponImage = Shotgun.get(WeaponHandling.Fire);
+            this.attacking = true;
         }
     }
 
@@ -201,23 +207,35 @@ implements KeyListener {
         }
         if (e.getKeyChar() == KeyEvent.VK_SPACE) {
         	currentWeaponImage = Shotgun.get(WeaponHandling.Hold);
+
         }
     }
     
-    public boolean checkAttackRange(Mob mob) {
-    	if (currentWeaponImage == Shotgun.get(WeaponHandling.Fire)) {
-    		double diffX = mob.xPosition - x;
-    		double diffY = mob.yPosition - y;
-    		if (Math.abs(diffY) <= 200 && Math.abs(diffX) <= 200) {
+    public boolean checkAttackRange(Mob mob, double test) {
+       // currentWeaponImage == Shotgun.get(WeaponHandling.Fire)
+    	if (attacking ) {
+
+           System.out.println(" Player angle " + this.rotationAngle);
+            System.out.println(" FOV angle " + Game.FOV_ANGLE/4);
+            System.out.println(" Mob angle " + mob.angle);
+//            System.out.println(mob.xPosition + " MOB POSITION Y: " + mob.yPosition);
+//            System.out.println("MOB TO PLAYER DIST" + test);
+
+    		if (test <= 250 && mob.angle <  Game.FOV_ANGLE/4 ) {
     			try {
-            		playDamageSound();
+
+            		    playDamageSound();
             	} catch (Exception e1) {
             		System.out.println(e1.toString());
-            	}    			
+            	}
+
     			return true;
     		}
+
     	}
-    	return false;
+        currentWeaponImage = Shotgun.get(WeaponHandling.Hold);
+
+        return false;
     }
     
     static void playGunSound() throws Exception {
