@@ -45,5 +45,4 @@ public class MouseInput implements MouseListener {
 		// TODO Auto-generated method stub
 		
 	}
-
 }
