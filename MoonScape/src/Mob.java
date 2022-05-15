@@ -2,6 +2,9 @@
  * The mobs can currently shoot through walls, but I just need to implement the hasWallAt method.
  * The mobs aren't the best at finding the player, once it hits a wall. (Need to fix the math) 
  */
+
+package main;
+
 import java.util.Hashtable;
 
 public class Mob extends Sprite {
@@ -13,7 +16,7 @@ public class Mob extends Sprite {
 		Walk_1, Walk_2, Walk_3, Walk_4,
 		Shoot_1, Shoot_2
 	}
-	public static Hashtable<Movement, Texture> guardMovement = new Hashtable<>();
+
 
 	public static Hashtable<Movement, Texture> guardMovement1 = new Hashtable<>(){{
 		put(Movement.Standing, new Texture("res/guard/mguard_s_1.bmp", 64));
@@ -27,16 +30,27 @@ public class Mob extends Sprite {
 
 
 	public static Hashtable<Movement, Texture> guardMovement2 = new Hashtable<>(){{
-		put(Movement.Standing, new Texture("res/guard/mguard_s_1.bmp", 64));
-		put(Movement.Walk_1, new Texture("res/objects/pot.bmp", 64));
-		put(Movement.Walk_2, new Texture("res/guard/mguard_w2_1.bmp", 64));
-		put(Movement.Walk_3, new Texture("res/guard/mguard_w3_1.bmp", 64));
-		put(Movement.Walk_4, new Texture("res/guard/mguard_w4_1.bmp", 64));
-		put(Movement.Shoot_1, new Texture("res/objects/pot.bmp", 64));
-		put(Movement.Shoot_2, new Texture("res/guard/mguard_shoot3.bmp", 64));
+		put(Movement.Standing, new Texture("res/guard/difEnemy/9.bmp", 64));
+		put(Movement.Walk_1, new Texture("res/guard/difEnemy/1.bmp", 64));
+		put(Movement.Walk_2, new Texture("res/guard/difEnemy/2.bmp", 64));
+		put(Movement.Walk_3, new Texture("res/guard/difEnemy/3.bmp", 64));
+		put(Movement.Walk_4, new Texture("res/guard/difEnemy/4.bmp", 64));
+		put(Movement.Shoot_1, new Texture("res/guard/difEnemy/10.bmp", 64));
+		put(Movement.Shoot_2, new Texture("res/guard/difEnemy/11.bmp", 64));
 	}};
-	
-	
+
+	public static Hashtable<Movement, Texture> guardMovement3 = new Hashtable<>(){{
+		put(Movement.Standing, new Texture("res/guard/bigBoy/trans_aim.bmp", 64));
+		put(Movement.Walk_1, new Texture("res/guard/bigBoy/trans_w1.bmp", 64));
+		put(Movement.Walk_2, new Texture("res/guard/bigBoy/trans_w2.bmp", 64));
+		put(Movement.Walk_3, new Texture("res/guard/bigBoy/trans_w3.bmp", 64));
+		put(Movement.Walk_4, new Texture("res/guard/bigBoy/trans_w4.bmp", 64));
+		put(Movement.Shoot_1, new Texture("res/guard/bigBoy/trans_fire1.bmp", 64));
+		put(Movement.Shoot_2, new Texture("res/guard/bigBoy/trans_fire2.bmp", 64));
+	}};
+
+
+	public  Hashtable<Movement, Texture> guardMovement = new Hashtable<>();
 	public double speed;
 	public double constantSpeed;
 	public int health;
@@ -45,14 +59,21 @@ public class Mob extends Sprite {
 	int beginWalking = 1;
 	
 	// every shot we decrease the enemies speed by like .10
-    public static Mob guard1 = new Mob(guardMovement1.get(Movement.Standing).location, 64, 110, 128, 6, guardMovement1);
-   // public static Mob guard2 = new Mob(guardMovement.get(Movement.Standing).location, 64, 300, 400, 0.30);
+	public static Mob guard2 = new Mob(guardMovement1.get(Movement.Standing).location, 64, 775, 130, 6,2, guardMovement1);
+
+    public static Mob guard1 = new Mob(guardMovement2.get(Movement.Standing).location, 64, 110, 128, 6,5, guardMovement2);
 
 
+	public static Mob guard3 = new Mob(guardMovement1.get(Movement.Standing).location, 64, 896, 820, 6,2, guardMovement1);
+	public static Mob guard4 = new Mob(guardMovement1.get(Movement.Standing).location, 64, 1152, 800, 6,2, guardMovement1);
+	public static Mob guard5 = new Mob(guardMovement2.get(Movement.Standing).location, 64, 1188, 317, 6,5, guardMovement2);
+
+
+	public static Mob bigGuy = new Mob(guardMovement3.get(Movement.Standing).location, 64, 1400, 700, 10,15, guardMovement3);
 
 
 	public final int textureOffset = 10;
-	public int SHOOT_RANGE = 200;
+	public int SHOOT_RANGE = 190;
 
     // this'll be used for when the player has killed a mob
 		// 	we will remove it from the arraylist and stop rendering it
@@ -60,13 +81,13 @@ public class Mob extends Sprite {
 
 	double startingPosX, startingPosY;
 	// all mobs will start out with the standing image
-	public Mob(String location, int size, double x, double y, double speed, Hashtable<Movement, Texture> animation) {
+	public Mob(String location, int size, double x, double y, double speed, int health, Hashtable<Movement, Texture> animation) {
 		super(location, size, x, y);
 		this.speed = speed;
 		this.constantSpeed = speed;
-		this.health = 4;
-		this.maxHealth = 4;
-		this.guardMovement = animation;
+		this.health = health;
+		this.maxHealth = health;
+		this.guardMovement.putAll(animation);
 		this.removed = false;
 		
 	}
@@ -87,11 +108,11 @@ public class Mob extends Sprite {
 		// maybe play a sound to indicate that the mob is inflicting damage
 		if (checkAttackRange(diffY, diffX)) {
 			speed = 0;
-			this.changeTexture(guardMovement.get(Movement.Shoot_2));
+			this.changeTexture(this.guardMovement.get(Movement.Shoot_2));
 			// should be != 0
 			if (player.health != 0) {
 				// update the players health bar
-				player.health -= 0.5;
+				player.health -= 1;
 				//player.drawHealthbar(g);
 				System.out.println(player.health);
 			}
@@ -114,7 +135,7 @@ public class Mob extends Sprite {
 			this.yPosition = newYPos;
 			//System.out.println("guard is walking");
 		}else{
-			this.changeTexture(guardMovement.get(Movement.Standing));
+			this.changeTexture(this.guardMovement.get(Movement.Standing));
 
 		}
 
@@ -147,16 +168,16 @@ public class Mob extends Sprite {
 	
 	public void chooseWalk() {
 		if (walk == 1) {
-			this.changeTexture(guardMovement.get(Movement.Walk_1));
+			this.changeTexture(this.guardMovement.get(Movement.Walk_1));
 		}
 		if (walk == 2) {
-			this.changeTexture(guardMovement.get(Movement.Walk_2));
+			this.changeTexture(this.guardMovement.get(Movement.Walk_2));
 		}
 		if (walk == 3) {
-			this.changeTexture(guardMovement.get(Movement.Walk_3));
+			this.changeTexture(this.guardMovement.get(Movement.Walk_3));
 		}
 		if (walk == 4) {
-			this.changeTexture(guardMovement.get(Movement.Walk_4));
+			this.changeTexture(this.guardMovement.get(Movement.Walk_4));
 		}
 		
 	}
