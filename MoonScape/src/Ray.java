@@ -1,3 +1,5 @@
+package main;
+
 public class Ray {
 
     double rayAngle;
