@@ -1,12 +1,12 @@
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 // Mary Czelusniak
 // Sprite calculations,
 // No colission check for sprites
 // Since they are all 64x64 squares within the 3D "screen," implementing a colission check becomes much more complicated
 // because we have to account for the pixels, the magenta background in the png files, that we do not see in the game.
 // Not doing so makes the character unable to move way before it actually gets close to the sprite
+
+package main;
+
 public class Sprite extends Texture{
 
     public static Sprite plantInPot = new Sprite ("res/objects/PlantInPot.bmp",64,90,730);
@@ -21,6 +21,9 @@ public class Sprite extends Texture{
 
     public static Sprite pot = new Sprite ("res/objects/pot.bmp",64,150,6*64+36);
     public static Sprite box = new Sprite("res/objects/box.png",64, 647, 150);
+
+
+
     public static Sprite blueLight = new Sprite("res/objects/blueLight.bmp",64, 775, 150);
     public static Sprite blueLight2 = new Sprite("res/objects/blueLight.bmp",64, 896, 832);
     public static Sprite blueLight3 = new Sprite("res/objects/blueLight.bmp",64, 1152, 832);
@@ -42,7 +45,7 @@ public class Sprite extends Texture{
 
 
 
-    double xPosition, yPosition, distance, angle;
+    double xPosition, yPosition, distance, angle, angleSpritePlayer;
 
     public boolean visible;
     public boolean isRemoved = false;
@@ -53,7 +56,7 @@ public class Sprite extends Texture{
         this.yPosition = y;
     }
     public void visibleSprite (Player player){
-            double angleSpritePlayer = player.rotationAngle - Math.atan2(this.yPosition - player.y,
+             double angleSpritePlayer = player.rotationAngle - Math.atan2(this.yPosition - player.y,
                     this.xPosition - player.x);
 
             if(angleSpritePlayer > Math.PI){
