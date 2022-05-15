@@ -1,17 +1,12 @@
-package main;
 //Mary Czelusniak
 //Ray Casting Engine
-import javax.sound.sampled.Line;
+
+package main;
+
 import javax.swing.*;
-
-import main.Mob;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.geom.Line2D;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -64,7 +59,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
 
 
-  public Color guardColor = new Color(152,0,136,255);
+  public static Color guardColor = new Color(152,0,136,255);
 
   public enum STATE {
       MENU, GAME, WON, LOST;
@@ -127,7 +122,11 @@ public class Game extends JFrame implements Runnable, ActionListener {
       // add more mobs
       mobs = new ArrayList<Mob>();
       mobs.add(Mob.guard1);
-
+      mobs.add(Mob.guard2);
+      mobs.add(Mob.guard3);
+      mobs.add(Mob.guard4);
+      mobs.add(Mob.guard5);
+      mobs.add(Mob.bigGuy);
 
       sprites = new ArrayList<Sprite>();
       sprites.add(Sprite.candlestand);
@@ -141,9 +140,12 @@ public class Game extends JFrame implements Runnable, ActionListener {
       sprites.add(Sprite.fountain);
       sprites.add(Sprite.fountain2);
       sprites.add(Sprite.box);
+
       sprites.add(Sprite.blueLight2);
       sprites.add(Sprite.blueLight3);
       sprites.add(Sprite.blueLight4);
+
+
       sprites.add(Sprite.plantInPot);
       sprites.add(Sprite.blueLight);
       sprites.add(Sprite.fancyBarrel);
@@ -216,12 +218,6 @@ public class Game extends JFrame implements Runnable, ActionListener {
                   e.printStackTrace();
               }
           }
-          else if (State == STATE.WON) {
-        	  winScreen();
-          }
-          else if (State == State.LOST) {
-        	  loseScreen();
-          }
 
       }
 
@@ -232,23 +228,28 @@ public class Game extends JFrame implements Runnable, ActionListener {
 
           Ray mobToPlayer = mo.rangeOfView(player);
           mobToPlayer.cast(mo.xPosition, mo.yPosition);
-          double mobToPlayerDistance = Ray.distanceBetweenPoints(mobs.get(0).xPosition, mobs.get(0).yPosition,player.x,player.y);
-          double mobToWallDistance = Ray.distanceBetweenPoints(mobs.get(0).xPosition, mobs.get(0).yPosition, mobToPlayer.wallHitX, mobToPlayer.wallHitY);
+          double mobToPlayerDistance = Ray.distanceBetweenPoints(mo.xPosition, mo.yPosition,player.x,player.y);
+          double mobToWallDistance = Ray.distanceBetweenPoints(mo.xPosition, mo.yPosition, mobToPlayer.wallHitX, mobToPlayer.wallHitY);
 
-          if(mobToPlayerDistance < mobToWallDistance){
 
-                  mo.update(player);
+
+          if(mobToPlayerDistance < mobToWallDistance) {
+
+              mo.update(player);
+
+            if(mo.angle <  Game.FOV_ANGLE/4){
+              if (player.checkAttackRange(mo, mobToPlayerDistance)) {
+                  if (mo.health == 1) {
+                      mo.removed = true;
+                  }
+                  System.out.println(mo.health + " took damage");
+                  mo.health -= 1;
+
+                  player.attacking = false;
+              }
           }
-          
-          if (player.checkAttackRange(mo)) {
-          	if (mo.health == 1) {
-          		mo.removed = true;
-          	}
-          	
-          	mo.health -= 1;
-          	System.out.println("Mobs Health: " + mo.health);
-          }
 
+          }
   }
 
 
@@ -554,6 +555,7 @@ public class Game extends JFrame implements Runnable, ActionListener {
 	   	bs.show();
 	   }
 
+
   private void render() {
       bs = getBufferStrategy();
       if (bs == null){
@@ -590,18 +592,15 @@ public class Game extends JFrame implements Runnable, ActionListener {
       }
 
       //       // Figuring out the MOB ray
-//      Ray yy = mobs.get(0).rangeOfView(player);
-//      yy.cast(mobs.get(0).xPosition, mobs.get(0).yPosition);
-//      g.setColor(Color.MAGENTA);
-//      g.fillOval((int) mobs.get(0).xPosition, (int) mobs.get(0).yPosition, (int) 10, (int)10);
-//      g.drawLine((int) mobs.get(0).xPosition, (int) mobs.get(0).yPosition, (int) yy.wallHitX, (int) yy.wallHitY);
+//      for(Mob mob : mobs) {
+//          Ray yy = mob.rangeOfView(player);
+//          yy.cast(mob.xPosition, mob.yPosition);
+//          g.setColor(Color.MAGENTA);
+//          g.fillOval((int) mob.xPosition, (int) mob.yPosition, (int) 10, (int) 10);
+//          g.drawLine((int) mob.xPosition, (int) mob.yPosition, (int) yy.wallHitX, (int) yy.wallHitY);
 //
 //
-//      double r = Ray.distanceBetweenPoints(mobs.get(0).xPosition, mobs.get(0).yPosition,player.x,player.y);
-//      double t = Ray.distanceBetweenPoints(mobs.get(0).xPosition, mobs.get(0).yPosition, yy.wallHitX, yy.wallHitY);
-//      if (r < t ){
-//          System.out.println("MOB TO PLAYER " + r);
-//          System.out.println ("MOB TO WALL " + t);
+//
 //      }
 
 
